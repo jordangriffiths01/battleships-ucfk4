@@ -5,5 +5,5 @@
 rm Makefile Makefile.test
 cd ../../etc
 make
-cd ../apps/final
+cd ../assignment/final
 make program
