@@ -84,3 +84,4 @@ apps/updown2/updown2
 #team1 gitignore
 labs/
 apps/
+*.cfg
