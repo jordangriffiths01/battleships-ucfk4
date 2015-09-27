@@ -1,3 +1,11 @@
+/** @file     game.c
+    @authors  Jordan Griffiths & Jonty Trombik
+    @date     27 September 2015
+
+    BATTLESHIPS!
+    This module contains the main function for
+    initialisation and task scheduling.
+**/
 
 #include "system.h"
 #include "task.h"
@@ -17,7 +25,7 @@
 #define LED_TASK_RATE 100
 #define IR_TASK_RATE 100
 
-typedef enum phase {SPLASH, PLACING, READY, BOTH_READY, AIM, FIRE, RESULT, TRANSFER, WAIT, WINNER} phase_t;
+typedef enum phase {SPLASH, PLACING, READY, AIM, FIRE, RESULT, TRANSFER, WAIT, WINNER} phase_t;
 
 static phase_t game_phase;
 
@@ -82,9 +90,7 @@ static void navswitch_task(__unused__ void *data) {
           }
         }
         if(game_phase == READY) {
-
           ir_send_status(READY_S);
-
         }
         if(game_phase == AIM){
           if(is_valid_strike()){
@@ -98,22 +104,19 @@ static void navswitch_task(__unused__ void *data) {
 }
 
 static void button_task(__unused__ void *data) {
-  if (game_phase == SPLASH || game_phase == PLACING) {
-    button_update();
-    if (button_push_event_p(BUTTON1)) {
-      if (game_phase == SPLASH) { game_phase = PLACING; }
-      else if (game_phase == PLACING) { rotate_ship(); }
-      else if (game_phase == READY) { game_phase = AIM; } //TEMPORARY
-      else if (game_phase == BOTH_READY) {
-        ir_send_status(PLAYER_TWO_S);
-        game_phase = AIM;
-      }
+  button_update();
+  if (button_push_event_p(BUTTON1)) {
+    if (game_phase == SPLASH) { game_phase = PLACING; }
+    else if (game_phase == PLACING) { rotate_ship(); }
+    else if (game_phase == READY) {
+      game_phase = AIM;
+      ir_send_status(PLAYER_TWO_S);
     }
   }
 }
 
 static void led_task(__unused__ void *data) {
-  if (game_phase == PLACING ||game_phase == BOTH_READY || game_phase == AIM) {
+  if (game_phase == PLACING || game_phase == AIM) {
     led_set(LED1, 1);
   } else if (game_phase == SPLASH || game_phase == READY) {
     led_set(LED1, 0);
@@ -138,18 +141,15 @@ static void display_task(__unused__ void *data) {
 
 static void ir_task(__unused__ void *data) {
   if (game_phase == READY) {
-    ir_send_status(READY_S);
-    if (ir_get_status() == READY) { game_phase = BOTH_READY; }
+    if (ir_get_status() == PLAYER_TWO_S) {
+      tinygl_text("WAIT FOR OTHER PLAYER");
+      game_phase = WAIT;
+    }
   }
-  // } else if (game_phase == BOTH_READY) {
-  //
-  //   ir_send_status(READY_S);
-  //   if (ir_get_status() == PLAYER_TWO_S) { game_phase = WAIT; }
-  // }
 
-  if(game_phase == FIRE){
+  else if(game_phase == FIRE){
     states status = ir_get_status();
-    if(status == HIT_S || status = MISS_S){
+    if(status == HIT_S || status == MISS_S){
       tinygl_clear();
 
       if(status == HIT_S){
@@ -162,7 +162,6 @@ static void ir_task(__unused__ void *data) {
       game_phase = RESULT;
     }
   }
-
 }
 
 static void game_task(__unused__ void *data) {

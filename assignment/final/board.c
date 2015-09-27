@@ -52,10 +52,10 @@ bool is_valid_position(void) {
 
 bool is_valid_strike() {
   strike_position = tinygl_point(cursor.x, cursor.y);
-  return !(boards[TARGET_BOARD][cursor.x] >> cur_ship.y & 1)
+  return !(boards[TARGET_BOARD][cursor.x] >> cursor.y & 1);
 }
 
-void add_hit() {
+void add_hit(void) {
   boards[TARGET_BOARD][cursor.x] |= BIT(cursor.y);
 }
 

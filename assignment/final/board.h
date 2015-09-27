@@ -39,6 +39,10 @@ bool place_ship(void);
 
 bool is_valid_position(void);
 
+bool is_valid_strike(void);
+
+void add_hit(void);
+
 void move_ship(dir_t dir);
 
 void move_cursor(dir_t dir);

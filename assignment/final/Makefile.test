@@ -23,7 +23,7 @@ board-test.o: board.c ../../drivers/display.h ../../drivers/test/system.h ../../
 display_handler-test.o: display_handler.c ../../drivers/display.h ../../drivers/test/system.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/tinygl.h board.h display_handler.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-ir_handler-test.o: ir_handler.c ../../drivers/test/ir_uart.h ../../drivers/test/system.h ir_handler.h
+ir_handler-test.o: ir_handler.c ../../drivers/display.h ../../drivers/test/ir_uart.h ../../drivers/test/system.h ../../utils/font.h ../../utils/tinygl.h ir_handler.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 button-test.o: ../../drivers/button.c ../../drivers/button.h ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h

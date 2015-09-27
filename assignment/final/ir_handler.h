@@ -9,7 +9,7 @@
 
 #include "ir_uart.h"
 #include "tinygl.h"
-#DEFINE NO_POSITION  0xff
+#define NO_POSITION  0xff
 
 
 typedef enum {NORESPONSE_S, READY_S, ACKNOWLEDGED_S,  PLAYER_TWO_S, HIT_S, MISS_S} states;

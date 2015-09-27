@@ -45,7 +45,7 @@ states ir_get_status(void){
 }
 
 void ir_send_strike(tinygl_point_t pos) {
-  char msg = (pos.x << 4) | pos.y
+  char msg = (pos.x << 4) | pos.y;
   ir_uart_putc(msg);
 
 }
@@ -65,6 +65,6 @@ uint8_t ir_get_position(){
 tinygl_point_t ir_decode_strike(char c) {
   uint8_t x = c & 0xf;
   uint8_t y = c >> 4;
-  return tinygl_point(x, y)
+  return tinygl_point(x, y);
 
 }
