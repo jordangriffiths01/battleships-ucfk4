@@ -1,3 +1,10 @@
+/** @file     board.c
+    @authors  Jordan Griffiths & Jonty Trombik
+    @date     27 September 2015
+
+    @brief    Game board routine definitions for Battleships
+**/
+
 #ifndef BOARD_H
 #define BOARD_H
 
@@ -36,6 +43,8 @@ void move_ship(dir_t dir);
 void move_cursor(dir_t dir);
 
 Ship* get_ship(void);
+
+tinygl_point_t get_cursor(void);
 
 uint8_t* get_board(board_type_t board_type);
 

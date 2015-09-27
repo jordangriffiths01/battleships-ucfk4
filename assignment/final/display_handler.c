@@ -1,14 +1,20 @@
+/** @file     display_handler.c
+    @authors  Jordan Griffiths & Jonty Trombik
+    @date     27 September 2015
+
+    @brief    Display handling routines for battleships game
+**/
+
+
 #include "display_handler.h"
 
 
 void initialise_display(void) {
-  cursor = tinygl_point(0, 0);
   tinygl_init(DISPLAY_TASK_RATE);
   tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
   tinygl_text_speed_set(SCROLL_SPEED);
   tinygl_font_set (&font3x5_1);
   tinygl_text_dir_set(TINYGL_TEXT_DIR_ROTATE);
-  tinygl_text("HELP");
   tinygl_update();
 }
 
@@ -25,6 +31,7 @@ void draw_ship(void) {
 }
 
 void draw_cursor(void) {
+  tinygl_point_t cursor = get_cursor();
   tinygl_draw_point(cursor, 1);
 }
 

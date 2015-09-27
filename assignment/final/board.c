@@ -1,3 +1,11 @@
+/** @file     board.c
+    @authors  Jordan Griffiths & Jonty Trombik
+    @date     27 September 2015
+
+    @brief    Game board initialisation and manipulation routines
+              for Battleships
+**/
+
 #include "board.h"
 
 uint8_t ship_lengths[NUM_SHIPS] = {2,3,4};
@@ -10,6 +18,7 @@ void board_init(void) {
   }
   cur_ship_num = 0;
   reset_cur_ship(ship_lengths[cur_ship_num]);
+  cursor = tinygl_point(3,5);
 }
 
 bool place_ship(void) {
@@ -71,10 +80,11 @@ void move_cursor(dir_t dir) {
 
 Ship* get_ship(void) { return &cur_ship; }
 
+tinygl_point_t get_cursor(void) {return cursor; }
+
 uint8_t* get_board(board_type_t board_type) {
   return boards[board_type];
 }
-
 
 void rotate_ship(void) {
   cur_ship.pos = tinygl_point(0,0);

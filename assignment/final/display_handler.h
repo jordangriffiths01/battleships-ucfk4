@@ -1,3 +1,11 @@
+/** @file     display_handler.h
+    @authors  Jordan Griffiths & Jonty Trombik
+    @date     27 September 2015
+
+    @brief    display routine definitions
+**/
+
+
 #ifndef DISPLAY_HANDLER_H
 #define DISPLAY_HANDELR_H
 
