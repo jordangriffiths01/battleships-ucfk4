@@ -55,6 +55,20 @@ void move_ship(dir_t dir) {
   }
 }
 
+void move_cursor(dir_t dir) {
+
+  if (dir == DIR_W) {
+    cursor.x -= cursor.x  == 0? 0 : 1;
+  } else if (dir == DIR_E) {
+    cursor.x += cursor.x == DISPLAY_WIDTH - 1? 0 : 1;
+  } else if (dir == DIR_N) {
+    cursor.y -= cursor.y == 0? 0 : 1;
+  } else if (dir == DIR_S) {
+    cursor.y += cursor.y == DISPLAY_HEIGHT - 1? 0 : 1;
+  }
+}
+
+
 Ship* get_ship(void) { return &cur_ship; }
 
 uint8_t* get_board(board_type_t board_type) {

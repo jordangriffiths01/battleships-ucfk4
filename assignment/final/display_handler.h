@@ -11,5 +11,7 @@ void initialise_display(void);
 
 void draw_ship(void);
 
+void draw_cursor(void);
+
 void draw_board(board_type_t board_type);
 #endif

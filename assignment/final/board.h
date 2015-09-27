@@ -21,6 +21,8 @@ static uint8_t boards[2][DISPLAY_WIDTH];
 
 static Ship cur_ship;
 static uint8_t cur_ship_num;
+static tinygl_point_t cursor;
+
 
 
 void board_init(void);
@@ -30,6 +32,8 @@ bool place_ship(void);
 bool is_valid_position(void);
 
 void move_ship(dir_t dir);
+
+void move_cursor(dir_t dir);
 
 Ship* get_ship(void);
 

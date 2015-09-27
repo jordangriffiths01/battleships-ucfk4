@@ -2,6 +2,7 @@
 
 
 void initialise_display(void) {
+  cursor = tinygl_point(0, 0);
   tinygl_init(DISPLAY_TASK_RATE);
   tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
   tinygl_text_speed_set(SCROLL_SPEED);
@@ -21,6 +22,10 @@ void draw_ship(void) {
       tinygl_draw_point(tinygl_point(ship->pos.x, ship->pos.y + i), 1);
     }
   }
+}
+
+void draw_cursor(void) {
+  tinygl_draw_point(cursor, 1);
 }
 
 void draw_board(board_type_t board_type) {
