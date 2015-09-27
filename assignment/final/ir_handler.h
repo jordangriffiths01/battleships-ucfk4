@@ -3,9 +3,9 @@
 
 #include "ir_uart.h"
 
-typedef enum {NORESPONSE, READY, ACKNOWLEDGED,  PLAYER_TWO} states;
+typedef enum {NORESPONSE_S, READY_S, ACKNOWLEDGED_S,  PLAYER_TWO_S} states;
 
-int ir_send_status(char status)
+void ir_send_status(states status);
 
 states ir_get_status(void);
 

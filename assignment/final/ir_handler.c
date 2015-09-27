@@ -1,18 +1,9 @@
 
-
 #include "ir_handler.h"
-#include "tinygl.h"
-
-
-
-
 
 static int8_t rcvChar;
 
-
-
 void ir_send_status(states status){
-
 
   ir_uart_putc(status);
 }
@@ -24,19 +15,18 @@ states ir_get_status(void){
   {
     rcvChar =  ir_uart_getc();
 
-    if((states) rcvChar == READY){
-
-      return states READY;
+    if((states) rcvChar == READY_S){
+      return READY_S;
     }
-    if((states) rcvChar == ACKNOWLEDGED){
-      return states ACKNOWLEDGED;
+    if((states) rcvChar == ACKNOWLEDGED_S){
+      return ACKNOWLEDGED_S;
     }
-    if((states) rcvChar == PLAYER_TWO){
-      return states PLAYER_TWO;
+    if((states) rcvChar == PLAYER_TWO_S){
+      return PLAYER_TWO_S;
     }
 
   }
-  return states NoResponse;
+  return NORESPONSE_S;
 
 
 }
