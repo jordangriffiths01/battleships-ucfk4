@@ -19,6 +19,7 @@ void board_init(void) {
   cur_ship_num = 0;
   reset_cur_ship(ship_lengths[cur_ship_num]);
   cursor = tinygl_point(3,5);
+  strike_position = tinygl_point(0,0);
 }
 
 bool place_ship(void) {
@@ -47,6 +48,15 @@ bool is_valid_position(void) {
     }
   }
   return 1;
+}
+
+bool is_valid_strike() {
+  strike_position = tinygl_point(cursor.x, cursor.y);
+  return !(boards[TARGET_BOARD][cursor.x] >> cur_ship.y & 1)
+}
+
+void add_hit() {
+  boards[TARGET_BOARD][cursor.x] |= BIT(cursor.y);
 }
 
 void move_ship(dir_t dir) {

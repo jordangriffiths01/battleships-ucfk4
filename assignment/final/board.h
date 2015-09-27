@@ -29,6 +29,7 @@ static uint8_t boards[2][DISPLAY_WIDTH];
 static Ship cur_ship;
 static uint8_t cur_ship_num;
 static tinygl_point_t cursor;
+static tinygl_point_t strike_position;
 
 
 
