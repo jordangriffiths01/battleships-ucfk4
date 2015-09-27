@@ -11,7 +11,7 @@ static int8_t rcvChar;
 
 
 
-void ir_send_status(char status){
+void ir_send_status(states status){
 
 
   ir_uart_putc(status);
