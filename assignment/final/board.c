@@ -57,7 +57,7 @@ bool is_valid_strike() {
 }
 
 void add_hit(void) {
-  boards[TARGET_BOARD][cursor.x] |= BIT(cursor.y);
+  boards[TARGET_BOARD][strike_position.x] |= BIT(strike_position.y);
   game_score += 1;
 }
 

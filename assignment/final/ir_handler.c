@@ -52,8 +52,8 @@ uint8_t ir_get_position(void) {
 }
 
 tinygl_point_t ir_decode_strike(char c) {
-  uint8_t x = c & 0xf;
-  uint8_t y = c >> 4;
+  uint8_t y = c & 0xf;
+  uint8_t x = c >> 4;
   return tinygl_point(x, y);
 
 }
