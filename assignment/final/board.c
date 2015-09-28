@@ -8,7 +8,7 @@
 
 #include "board.h"
 
-uint8_t ship_lengths[NUM_SHIPS] = {2,3,4};
+uint8_t ship_lengths[NUM_SHIPS] = SHIP_LENGTHS;
 
 void board_init(void) {
   int i;
@@ -17,6 +17,7 @@ void board_init(void) {
     boards[TARGET_BOARD][i] = 0;
   }
   cur_ship_num = 0;
+  game_score = 0;
   reset_cur_ship(ship_lengths[cur_ship_num]);
   cursor = tinygl_point(3,5);
   strike_position = tinygl_point(0,0);
@@ -57,10 +58,15 @@ bool is_valid_strike() {
 
 void add_hit(void) {
   boards[TARGET_BOARD][cursor.x] |= BIT(cursor.y);
+  game_score += 1;
 }
 
 bool is_hit(tinygl_point_t pos) {
   return (boards[THIS_BOARD][pos.x] >> pos.y) & 1;
+}
+
+bool is_winner(void) {
+  return game_score == WINNING_SCORE;
 }
 
 void move_ship(dir_t dir) {

@@ -25,7 +25,7 @@
 #define LED_TASK_RATE 100
 #define IR_TASK_RATE 100
 
-typedef enum phase {SPLASH, PLACING, READY, AIM, FIRE, RESULT, TRANSFER, WAIT, WINNER} phase_t;
+typedef enum phase {SPLASH, PLACING, READY, AIM, FIRE, RESULT, TRANSFER, WAIT, ENDRESULT} phase_t;
 
 static phase_t game_phase;
 
@@ -82,21 +82,21 @@ static void navswitch_task(__unused__ void *data) {
     }
     else if (navswitch_push_event_p (NAVSWITCH_PUSH))
     {
-        if (game_phase == PLACING) {
-          uint8_t success = place_ship();
-          if (success && !next_ship()) {
-            tinygl_text("READY");
-            game_phase = READY;
-            ir_send_status(READY_S);
-          }
+      if (game_phase == PLACING) {
+        uint8_t success = place_ship();
+        if (success && !next_ship()) {
+          tinygl_clear();
+          tinygl_text("READY");
+          ir_send_status(READY_S);
+          game_phase = READY;
         }
-        else if(game_phase == AIM){
-          if(is_valid_strike()){
-            ir_send_strike(get_cursor());
-            game_phase = FIRE;
-          }
+      }
+      else if(game_phase == AIM){
+        if(is_valid_strike()){
+          ir_send_strike(get_cursor());
+          game_phase = FIRE;
         }
-
+      }
     }
   }
 }
@@ -109,6 +109,10 @@ static void button_task(__unused__ void *data) {
     else if (game_phase == READY) {
       game_phase = AIM;
       ir_send_status(PLAYER_TWO_S);
+    } else if (game_phase == RESULT) {
+      tinygl_clear();
+      tinygl_text("WAIT FOR OTHER PLAYER");
+      game_phase = WAIT;
     }
   }
 }
@@ -147,34 +151,44 @@ static void ir_task(__unused__ void *data) {
     states status = ir_get_status();
     if(status == HIT_S || status == MISS_S){
       tinygl_clear();
-
       if(status == HIT_S){
         tinygl_text("HIT");
         add_hit();
+        if(is_winner()) { ir_send_status(WIN_S); }
+        else { ir_send_status(PLAYON_S); }
       }
       else if(status == MISS_S){
         tinygl_text("MISS");
+        ir_send_status(PLAYON_S);
       }
       game_phase = RESULT;
     }
   }
+
   else if (game_phase == WAIT){
-    /**
-      ATM Just gets position, and then assumes it's a hit.
-    */
     uint8_t position = ir_get_position();
     if (position != NO_POSITION){
-      tinygl_clear();
-      tinygl_draw_char(position, tinygl_point(0,0));
       tinygl_point_t shot = ir_decode_strike(position);
-      if (is_hit(shot)) { ir_send_status(HIT_S); }
-      else {ir_send_status(MISS_S); }
-
+      if (is_hit(shot)) {
+        ir_send_status(HIT_S);
+        game_phase = TRANSFER;
+      } else {
+        ir_send_status(MISS_S);
+      }
       game_phase = TRANSFER;
     }
-
   }
 
+  else if (game_phase == TRANSFER) {
+    uint8_t status = ir_get_status();
+    if(status == WIN_S) {
+      tinygl_clear();
+      tinygl_text("LOSER");
+      game_phase = ENDRESULT;
+    } else if (status == PLAYON_S) {
+      game_phase = AIM;
+    }
+  }
 }
 
 static void game_task(__unused__ void *data) {
@@ -187,9 +201,9 @@ int main (void)
     task_t tasks[] =
     {
         {.func = display_task, .period = TASK_RATE / DISPLAY_TASK_RATE},
-        {.func = button_task, .period = TASK_RATE / NAVSWITCH_TASK_RATE},
+        {.func = navswitch_task, .period = TASK_RATE / NAVSWITCH_TASK_RATE},
+        {.func = button_task, .period = TASK_RATE / BUTTON_TASK_RATE},
         {.func = game_task, .period = TASK_RATE / GAME_TASK_RATE},
-        {.func = navswitch_task, .period = TASK_RATE / BUTTON_TASK_RATE},
         {.func = led_task, .period = TASK_RATE / LED_TASK_RATE},
         {.func = ir_task, .period = TASK_RATE / IR_TASK_RATE},
 

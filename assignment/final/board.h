@@ -12,6 +12,8 @@
 #include "../fonts/font3x5_1.h"
 
 #define NUM_SHIPS 1
+#define WINNING_SCORE 2
+#define SHIP_LENGTHS {2,3,4}
 
 typedef enum rotation {HORIZ, VERT} rotation_t;
 typedef enum dir {DIR_N, DIR_E, DIR_S, DIR_W} dir_t;
@@ -31,7 +33,7 @@ static uint8_t cur_ship_num;
 static tinygl_point_t cursor;
 static tinygl_point_t strike_position;
 
-
+static uint8_t game_score;
 
 void board_init(void);
 
@@ -44,6 +46,8 @@ bool is_valid_strike(void);
 void add_hit(void);
 
 bool is_hit(tinygl_point_t pos);
+
+bool is_winner(void);
 
 void move_ship(dir_t dir);
 
