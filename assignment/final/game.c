@@ -136,6 +136,7 @@ static void display_task(__unused__ void *data) {
   }
 
 
+
   tinygl_update();
 }
 
@@ -162,6 +163,18 @@ static void ir_task(__unused__ void *data) {
       game_phase = RESULT;
     }
   }
+  else if(game_phase == WAIT){
+    /**
+      ATM Just gets position, and then assumes it's a hit.
+    */
+    char position = ir_get_position();
+    if(position != NO_POSITION_S){
+      tinygl_point_t shot = ir_decode_strike(position);
+      game_phase = TRANSFER;
+    }
+
+  }
+
 }
 
 static void game_task(__unused__ void *data) {
