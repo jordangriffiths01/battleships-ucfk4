@@ -11,7 +11,7 @@
 #include "tinygl.h"
 #include "../fonts/font3x5_1.h"
 
-#define NUM_SHIPS 3
+#define NUM_SHIPS 1
 
 typedef enum rotation {HORIZ, VERT} rotation_t;
 typedef enum dir {DIR_N, DIR_E, DIR_S, DIR_W} dir_t;
@@ -42,6 +42,8 @@ bool is_valid_position(void);
 bool is_valid_strike(void);
 
 void add_hit(void);
+
+bool is_hit(tinygl_point_t pos);
 
 void move_ship(dir_t dir);
 

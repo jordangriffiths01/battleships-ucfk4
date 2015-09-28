@@ -59,6 +59,10 @@ void add_hit(void) {
   boards[TARGET_BOARD][cursor.x] |= BIT(cursor.y);
 }
 
+bool is_hit(tinygl_point_t pos) {
+  return (boards[THIS_BOARD][pos.x] >> pos.y) & 1;
+}
+
 void move_ship(dir_t dir) {
   uint8_t x_offset = cur_ship.rot == HORIZ? cur_ship.length - 1:0;
   uint8_t y_offset = cur_ship.rot == VERT? cur_ship.length - 1:0;

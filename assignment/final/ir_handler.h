@@ -22,4 +22,7 @@ states ir_get_status(void);
 void ir_send_strike(tinygl_point_t pos);
 
 tinygl_point_t ir_decode_strike(char c);
+
+uint8_t ir_get_position(void);
+
 #endif

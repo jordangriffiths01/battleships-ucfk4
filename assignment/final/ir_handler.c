@@ -27,22 +27,12 @@ states ir_get_status(void){
   if (ir_uart_read_ready_p ())
   {
     rcvChar =  ir_uart_getc();
-
-    if((states) rcvChar == READY_S){
-
-      return READY_S;
-    }
-    if((states) rcvChar == ACKNOWLEDGED_S){
-      return ACKNOWLEDGED_S;
-    }
-    if((states) rcvChar == PLAYER_TWO_S){
-      return  PLAYER_TWO_S;
-    }
-
+    return rcvChar;
   }
   return NORESPONSE_S;
 
 }
+
 
 void ir_send_strike(tinygl_point_t pos) {
   char msg = (pos.x << 4) | pos.y;
@@ -51,12 +41,11 @@ void ir_send_strike(tinygl_point_t pos) {
 }
 
 
-uint8_t ir_get_position(){
+uint8_t ir_get_position(void) {
   if (ir_uart_read_ready_p ())
   {
     char rcvdChar =  ir_uart_getc();
-    return rcvdChar;
-
+    return (uint8_t) rcvdChar;
   }
 
   return NO_POSITION;

@@ -87,12 +87,10 @@ static void navswitch_task(__unused__ void *data) {
           if (success && !next_ship()) {
             tinygl_text("READY");
             game_phase = READY;
+            ir_send_status(READY_S);
           }
         }
-        if(game_phase == READY) {
-          ir_send_status(READY_S);
-        }
-        if(game_phase == AIM){
+        else if(game_phase == AIM){
           if(is_valid_strike()){
             ir_send_strike(get_cursor());
             game_phase = FIRE;
@@ -134,9 +132,6 @@ static void display_task(__unused__ void *data) {
     draw_board(TARGET_BOARD);
     draw_cursor();
   }
-
-
-
   tinygl_update();
 }
 
@@ -163,13 +158,18 @@ static void ir_task(__unused__ void *data) {
       game_phase = RESULT;
     }
   }
-  else if(game_phase == WAIT){
+  else if (game_phase == WAIT){
     /**
       ATM Just gets position, and then assumes it's a hit.
     */
-    char position = ir_get_position();
-    if(position != NO_POSITION_S){
+    uint8_t position = ir_get_position();
+    if (position != NO_POSITION){
+      tinygl_clear();
+      tinygl_draw_char(position, tinygl_point(0,0));
       tinygl_point_t shot = ir_decode_strike(position);
+      if (is_hit(shot)) { ir_send_status(HIT_S); }
+      else {ir_send_status(MISS_S); }
+
       game_phase = TRANSFER;
     }
 
