@@ -12,7 +12,7 @@
 #define NO_POSITION  0xff
 
 
-typedef enum {NORESPONSE_S, READY_S, ACKNOWLEDGED_S,  PLAYER_TWO_S, HIT_S, MISS_S, LOOSER_S, PLAYON_S} states;
+typedef enum {NORESPONSE_S, READY_S, ACKNOWLEDGED_S,  PLAYER_TWO_S, HIT_S, MISS_S, LOSER_S, PLAYON_S} states;
 
 
 void ir_send_status(states status);

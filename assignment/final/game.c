@@ -178,13 +178,13 @@ static void ir_task(__unused__ void *data) {
         tinygl_text("  HIT");
         flicker_on = 1;
         add_hit();
-        if(is_winner()) { ir_send_status(WIN_S); }
-        else { ir_send_status(PLAYON_S); }
+        // if(is_winner()) { ir_send_status(LOSER_S); }
+        // else { ir_send_status(PLAYON_S); }
       }
       else if(status == MISS_S){
         tinygl_text("  MISS");
         flicker_on = false;
-        ir_send_status(PLAYON_S);
+        // ir_send_status(PLAYON_S);
       }
       game_phase = RESULT;
     }
@@ -206,7 +206,7 @@ static void ir_task(__unused__ void *data) {
 
   else if (game_phase == TRANSFER) {
     uint8_t status = ir_get_status();
-    if(status == WIN_S) {
+    if(status == LOSER_S) {
       tinygl_clear();
       tinygl_text("  LOSER");
       game_phase = ENDRESULT;
@@ -223,8 +223,15 @@ static void game_task(__unused__ void *data) {
     if (start_tick > (GAME_TASK_RATE) * 5) {
       start_tick = 0;
       tinygl_clear();
-      tinygl_text("  WAIT FOR OTHER PLAYER");
-      game_phase = WAIT;
+      if(is_winner()) {
+        ir_send_status(LOSER_S);
+        tinygl_text("  WINNER");
+        game_phase = ENDRESULT;
+      } else {
+        ir_send_status(PLAYON_S);
+        tinygl_text("  WAIT FOR OTHER PLAYER");
+        game_phase = WAIT;
+      }
     }
   }
 }
