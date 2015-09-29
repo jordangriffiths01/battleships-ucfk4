@@ -16,13 +16,16 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/spwm.h ../../utils/task.h ../../utils/tinygl.h board.h display_handler.h ir_handler.h
+game.o: game.c ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/spwm.h ../../utils/task.h ../../utils/tinygl.h board.h display_handler.h game.h ir_handler.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 board.o: board.c ../../drivers/avr/system.h ../../drivers/display.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/tinygl.h board.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 display_handler.o: display_handler.c ../../drivers/avr/system.h ../../drivers/display.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/tinygl.h board.h display_handler.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+game.o: game.c ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/spwm.h ../../utils/task.h ../../utils/tinygl.h board.h display_handler.h game.h ir_handler.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 ir_handler.o: ir_handler.c ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h ir_handler.h
@@ -80,7 +83,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create output file (executable) from object files.
-game.out: game.o board.o display_handler.o ir_handler.o ir_uart.o pio.o prescale.o system.o timer.o timer0.o usart1.o button.o display.o led.o ledmat.o navswitch.o font.o spwm.o task.o tinygl.o
+game.out: game.o board.o display_handler.o game.o ir_handler.o ir_uart.o pio.o prescale.o system.o timer.o timer0.o usart1.o button.o display.o led.o ledmat.o navswitch.o font.o spwm.o task.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
