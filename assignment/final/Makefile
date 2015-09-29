@@ -16,7 +16,7 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h board.h display_handler.h ir_handler.h
+game.o: game.c ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/spwm.h ../../utils/task.h ../../utils/tinygl.h board.h display_handler.h ir_handler.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 board.o: board.c ../../drivers/avr/system.h ../../drivers/display.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/tinygl.h board.h
@@ -67,6 +67,9 @@ navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/a
 font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+spwm.o: ../../utils/spwm.c ../../drivers/avr/system.h ../../utils/spwm.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -77,7 +80,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create output file (executable) from object files.
-game.out: game.o board.o display_handler.o ir_handler.o ir_uart.o pio.o prescale.o system.o timer.o timer0.o usart1.o button.o display.o led.o ledmat.o navswitch.o font.o task.o tinygl.o
+game.out: game.o board.o display_handler.o ir_handler.o ir_uart.o pio.o prescale.o system.o timer.o timer0.o usart1.o button.o display.o led.o ledmat.o navswitch.o font.o spwm.o task.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
