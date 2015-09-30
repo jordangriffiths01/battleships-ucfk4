@@ -32,8 +32,8 @@ static void button_task_init(void) {
 static void led_task_init(void) {
   led_init();
   flicker_on = 0;
-  spwm_period_set(&led_flicker, 20);
-  spwm_duty_set(&led_flicker, 13);
+  spwm_period_set(&led_flicker, led_period);
+  spwm_duty_set(&led_flicker, led_duty);
   spwm_reset(&led_flicker);
 }
 
@@ -208,6 +208,7 @@ static void game_task(__unused__ void *data) {
 }
 
 
+
 void change_phase(phase_t new_phase) {
   switch (new_phase) {
     case SPLASH:
@@ -267,7 +268,6 @@ int main (void)
     };
 
     system_init ();
-
     display_task_init ();
     button_task_init ();
     game_task_init ();

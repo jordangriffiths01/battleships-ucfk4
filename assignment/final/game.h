@@ -1,6 +1,15 @@
+/** @file     game.c
+    @authors  Jordan Griffiths & Jonty Trombik
+    @date     27 September 2015
+
+    BATTLESHIPS!
+    This module contains header information for the primary game handler.
+**/
+
+
+
 #ifndef GAME_H
 #define GAME_H
-
 
 
 #include "system.h"
@@ -23,13 +32,15 @@
 #define IR_TASK_RATE 100
 #define TEXT_DURATION 5
 
+#define led_period 23
+#define led_duty 13
 
 typedef enum phase {
-  SPLASH, //Used for first display message
-  PLACING, //Ship placement phase
-  READY, //Waiting for a player to choose player1
-  AIM,   //Active turn phase
-  FIRE,  //Fire placement selected, sending IR to other player
+  SPLASH, //Used for first display message.
+  PLACING, //Ship placement phase.
+  READY, //Waiting for a player to choose player1.
+  AIM,   //Active turn phase - player1 selects strike location.
+  FIRE,  //Strike location selected, sending IR to other player.
   RESULT, //Hit or miss message shown to active player
   TRANSFER, //Next turn intermediate phase
   WAIT,    //Player 2 phase, inactive state waiting for IR.
@@ -41,9 +52,11 @@ typedef enum phase {
  static int tick;
  static int start_tick;
  static spwm_t led_flicker;
- static short flicker_on; //actiaveted when 1 (when a a shot is successful. and hit is displayed)
+ static short flicker_on; //Flag used for led flashing. 1 flash (hit), 0 don't flash (miss).
 
+/** Initializes tinygl and sets a splash screen message. */
 static void display_task_init(void);
+
 
 static void navswitch_task_init(void);
 
@@ -51,8 +64,10 @@ static void game_task_init(void);
 
 static void button_task_init(void);
 
+/* Initializes LED and LED flasher. */
 static void led_task_init(void);
 
+/** Initializes IR and ir_uart module */
 static void ir_task_init(void);
 
 static void navswitch_task(__unused__ void *data);
@@ -67,12 +82,10 @@ static void ir_task(__unused__ void *data);
 
 static void game_task(__unused__ void *data);
 
+/** Switches the current game phase to the provided enum value */
 void change_phase(phase_t new_phase);
 
 dir_t get_navswitch_dir(void);
 
-void change_phase(phase_t new_phase);
-
-dir_t get_navswitch_dir(void);
 
 #endif
