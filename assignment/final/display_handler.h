@@ -22,4 +22,7 @@ void draw_ship(void);
 void draw_cursor(void);
 
 void draw_board(board_type_t board_type);
+
+void display_result(strike_result_t last_result);
+
 #endif

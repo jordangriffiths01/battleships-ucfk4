@@ -46,3 +46,12 @@ void draw_board(board_type_t board_type) {
     }
   }
 }
+
+void display_result(strike_result_t last_result) {
+  tinygl_clear();
+  if (last_result == MISS) {
+    tinygl_text("  MISS");
+  } else {
+    tinygl_text("  HIT");
+  }
+}

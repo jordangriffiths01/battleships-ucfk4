@@ -9,9 +9,6 @@
 
 #include "game.h"
 
-
-
-
 static void display_task_init(void) {
   initialise_display();
   tinygl_text("  PUSH TO START");
@@ -46,163 +43,214 @@ static void ir_task_init(void) {
 
 static void navswitch_task(__unused__ void *data) {
 
-  if (game_phase == PLACING || game_phase == AIM) {
-    navswitch_update();
-    if (navswitch_push_event_p (NAVSWITCH_WEST))
-    {
-        if (game_phase == PLACING) { move_ship(DIR_W); }
-        if (game_phase == AIM) { move_cursor(DIR_W); }
-    }
-    else if (navswitch_push_event_p (NAVSWITCH_EAST))
-    {
-        if (game_phase == PLACING) { move_ship(DIR_E); }
-        if (game_phase == AIM) { move_cursor(DIR_E); }
-    }
-    else if (navswitch_push_event_p (NAVSWITCH_NORTH))
-    {
-        if (game_phase == PLACING) { move_ship(DIR_N); }
-        if (game_phase == AIM) { move_cursor(DIR_N); }
-    }
-    else if (navswitch_push_event_p (NAVSWITCH_SOUTH))
-    {
-        if (game_phase == PLACING) { move_ship(DIR_S); }
-        if (game_phase == AIM) { move_cursor(DIR_S); }
-    }
-    else if (navswitch_push_event_p (NAVSWITCH_PUSH))
-    {
-      if (game_phase == PLACING) {
-        uint8_t success = place_ship();
-        if (success && !next_ship()) {
-          tinygl_clear();
-          tinygl_text("  READY");
-          ir_send_status(READY_S);
-          game_phase = READY;
-        }
+  dir_t dir;
+  switch(game_phase) {
+
+    case PLACING:
+      dir = get_navswitch_dir();
+      if (dir >= DIR_N && dir <= DIR_W) {
+        move_ship(dir);
+      } else if (dir == DIR_DOWN && place_ship() && !next_ship()) {
+        ir_send_status(READY_S);
+        change_phase(READY);
       }
-      else if(game_phase == AIM){
-        if(is_valid_strike()){
-          ir_send_strike(get_cursor());
-          game_phase = FIRE;
-        }
+      break;
+
+    case AIM:
+      dir = get_navswitch_dir();
+      if (dir >= DIR_N && dir <= DIR_W) {
+        move_cursor(dir);
+      } else if(dir == DIR_DOWN && is_valid_strike()){
+        ir_send_strike(get_cursor());
+        change_phase(FIRE);
       }
-    }
+      break;
   }
 }
+
 
 static void button_task(__unused__ void *data) {
   button_update();
   if (button_push_event_p(BUTTON1)) {
-    if (game_phase == SPLASH) { game_phase = PLACING; }
-    else if (game_phase == PLACING) { rotate_ship(); }
-    else if (game_phase == READY) {
-      game_phase = AIM;
-      ir_send_status(PLAYER_TWO_S);
-    } else if (game_phase == RESULT) {
-      tinygl_clear();
-      tinygl_text("  WAIT FOR OTHER PLAYER");
-      game_phase = WAIT;
+    switch (game_phase) {
+      case SPLASH:
+        change_phase(PLACING);
+        break;
+
+      case PLACING:
+        rotate_ship();
+        break;
+
+      case READY:
+        ir_send_status(PLAYER_TWO_S);
+        change_phase(AIM);
+        break;
+
+      case RESULT:
+        change_phase(WAIT);
+        break;
     }
   }
 }
 
+
+
 static void led_task(__unused__ void *data) {
-  if (game_phase == PLACING || game_phase == AIM) {
-    led_set(LED1, 1);
-  } else if (game_phase == SPLASH || game_phase == READY || game_phase == WAIT) {
-    led_set(LED1, 0);
 
-  }
-  else if(game_phase == RESULT){
-    flicker_on ? led_set(LED1, spwm_update(&led_flicker)) : led_set(LED1, 0);
-  }
+  switch (game_phase) {
+    case PLACING:
+    case AIM:
+      led_set(LED1, 1);
+      break;
 
+    case SPLASH:
+    case READY:
+    case WAIT:
+      led_set(LED1, 0);
+      break;
+
+    case RESULT:
+      flicker_on ? led_set(LED1, spwm_update(&led_flicker)) : led_set(LED1, 0);
+      break;
+  }
 }
 
+
+
 static void display_task(__unused__ void *data) {
-  if (game_phase == PLACING) {
-    tinygl_clear();
-    draw_board(THIS_BOARD);
-    draw_ship();
-  } else if (game_phase == AIM) {
-    tinygl_clear();
-    draw_board(TARGET_BOARD);
-    draw_cursor();
+  switch (game_phase) {
+
+    case PLACING:
+      tinygl_clear();
+      draw_board(THIS_BOARD);
+      draw_ship();
+      break;
+
+    case AIM:
+      tinygl_clear();
+      draw_board(TARGET_BOARD);
+      draw_cursor();
+      break;
+
   }
   tinygl_update();
 }
 
+
+
 static void ir_task(__unused__ void *data) {
-  if (game_phase == READY) {
-    if (ir_get_status() == PLAYER_TWO_S) {
-      tinygl_text("  WAIT FOR OTHER PLAYER");
-      game_phase = WAIT;
-    }
-  }
+  states status;
+  uint8_t position;
+  switch (game_phase){
 
-  else if(game_phase == FIRE){
-    states status = ir_get_status();
-    if(status == HIT_S || status == MISS_S){
-      tinygl_clear();
-      if(status == HIT_S){
-        tinygl_text("  HIT");
-        flicker_on = 1;
-        add_hit();
-        // if(is_winner()) { ir_send_status(LOSER_S); }
-        // else { ir_send_status(PLAYON_S); }
-      }
-      else if(status == MISS_S){
-        tinygl_text("  MISS");
-        flicker_on = false;
-        // ir_send_status(PLAYON_S);
-      }
-      game_phase = RESULT;
-    }
-  }
+    case READY:
+      if (ir_get_status() == PLAYER_TWO_S) { change_phase(WAIT); }
+      break;
 
-  else if (game_phase == WAIT){
-    uint8_t position = ir_get_position();
-    if (position != NO_POSITION){
-      tinygl_point_t shot = ir_decode_strike(position);
-      if (is_hit(shot)) {
-        ir_send_status(HIT_S);
-        game_phase = TRANSFER;
-      } else {
-        ir_send_status(MISS_S);
-      }
-      game_phase = TRANSFER;
-    }
-  }
+    case FIRE:
+      status = ir_get_status();
+      switch (status) {
+        case HIT_S:
+          flicker_on = 1;
+          add_hit();
+          last_result = HIT;
+          change_phase(RESULT);
+          break;
 
-  else if (game_phase == TRANSFER) {
-    uint8_t status = ir_get_status();
-    if(status == LOSER_S) {
-      tinygl_clear();
-      tinygl_text("  LOSER");
-      game_phase = ENDRESULT;
-    } else if (status == PLAYON_S) {
-      game_phase = AIM;
-    }
+        case MISS_S:
+          last_result = MISS;
+          change_phase(RESULT);
+          break;
+      }
+      break;
+
+    case WAIT:
+      position = ir_get_position();
+      if (position != NO_POSITION) {
+        tinygl_point_t shot = ir_decode_strike(position);
+        if (is_hit(shot)) {
+          ir_send_status(HIT_S);
+        } else {
+          ir_send_status(MISS_S);
+        }
+        change_phase(TRANSFER);
+      }
+      break;
+
+    case TRANSFER:
+      status = ir_get_status();
+      if (status == LOSER_S) { change_phase(ENDRESULT); }
+      else if (status == PLAYON_S) { change_phase(AIM); }
+      break;
+
   }
 }
 
+
 static void game_task(__unused__ void *data) {
   tick += 1;
-  if (game_phase == RESULT) {
-    start_tick += 1;
-    if (start_tick > (GAME_TASK_RATE) * 5) {
-      start_tick = 0;
-      tinygl_clear();
-      if(is_winner()) {
-        ir_send_status(LOSER_S);
-        tinygl_text("  WINNER");
-        game_phase = ENDRESULT;
-      } else {
-        ir_send_status(PLAYON_S);
-        tinygl_text("  WAIT FOR OTHER PLAYER");
-        game_phase = WAIT;
+
+  switch(game_phase) {
+
+    case RESULT:
+      start_tick += 1;
+      if (start_tick > GAME_TASK_RATE * TEXT_DURATION) {
+        start_tick = 0;
+        if (is_winner()) {
+          ir_send_status(LOSER_S);
+          change_phase(ENDRESULT);
+        } else {
+          ir_send_status(PLAYON_S);
+          change_phase(WAIT);
+        }
       }
-    }
   }
+}
+
+
+void change_phase(phase_t new_phase) {
+  switch (new_phase) {
+    case SPLASH:
+      tinygl_clear();
+      tinygl_text("  PUSH TO START");
+      break;
+
+    case READY:
+      tinygl_clear();
+      tinygl_text("  READY");
+      break;
+
+    case RESULT:
+      tinygl_clear();
+      display_result(last_result);
+      break;
+
+    case WAIT:
+      tinygl_clear();
+      tinygl_text("  WAIT FOR OTHER PLAYER");
+      break;
+
+    case ENDRESULT:
+      tinygl_clear();
+      if (game_phase == RESULT) {
+        tinygl_text("  WINNER!");
+      } else {
+        tinygl_text("  LOSER!");
+      }
+      break;
+  }
+  game_phase = new_phase;
+}
+
+dir_t get_navswitch_dir(void) {
+
+  navswitch_update();
+  if (navswitch_push_event_p (NAVSWITCH_WEST)) return DIR_W;
+  if (navswitch_push_event_p (NAVSWITCH_EAST)) return DIR_E;
+  if (navswitch_push_event_p (NAVSWITCH_NORTH)) return DIR_N;
+  if (navswitch_push_event_p (NAVSWITCH_SOUTH)) return DIR_S;
+  if (navswitch_push_event_p (NAVSWITCH_PUSH)) return DIR_DOWN;
+  return DIR_NONE;
 }
 
 
