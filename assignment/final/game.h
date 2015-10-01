@@ -25,15 +25,15 @@
 #include "ir_handler.h"
 
 /* Define polling rates in Hz.  */
-#define BUTTON_TASK_RATE 100
-#define GAME_TASK_RATE 100
-#define NAVSWITCH_TASK_RATE 100
-#define LED_TASK_RATE 100
+#define BUTTON_TASK_RATE 20
+#define GAME_TASK_RATE 20
+#define NAVSWITCH_TASK_RATE 20
+#define LED_TASK_RATE 20
 #define IR_TASK_RATE 100
-#define TEXT_DURATION 3
 
-#define LED_PERIOD 23
-#define LED_DUTY 13
+#define TEXT_DURATION 3
+#define LED_PERIOD (LED_TASK_RATE / 4)
+#define LED_DUTY (LED_TASK_RATE / 6)
 
 typedef enum phase {
   SPLASH, //Used for first display message.
@@ -55,7 +55,6 @@ typedef enum phase {
 
 /** Initializes tinygl and sets a splash screen message. */
 static void display_task_init(void);
-
 
 static void navswitch_task_init(void);
 

@@ -13,7 +13,7 @@
 #include "tinygl.h"
 
 #define SCROLL_SPEED 25
-#define DISPLAY_TASK_RATE 250
+#define DISPLAY_TASK_RATE 300
 
 void initialise_display(void);
 
