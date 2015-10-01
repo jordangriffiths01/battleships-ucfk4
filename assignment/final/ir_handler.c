@@ -22,9 +22,9 @@ states ir_get_status(void){
     return NORESPONSE_S;
 }
 
-
+/** encodes pos as 0b00(pos.x)(pos.y) and sends as character **/
 void ir_send_strike(tinygl_point_t pos) {
-    char msg = (pos.x << 4) | pos.y;
+    char msg = (pos.x << 3) | pos.y;
     ir_uart_putc(msg);
 }
 
@@ -41,7 +41,7 @@ uint8_t ir_get_position(void) {
 
 
 tinygl_point_t ir_decode_strike(char c) {
-    uint8_t y = c & 0xf;
-    uint8_t x = c >> 4;
+    uint8_t y = c & 0x7;
+    uint8_t x = c >> 3;
     return tinygl_point(x, y);
 }

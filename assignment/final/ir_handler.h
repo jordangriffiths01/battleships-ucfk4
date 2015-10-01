@@ -13,8 +13,9 @@
 
 static int8_t rcvChar;
 
+/** Status codes used for IR - must be in range 0x40 -> 0x7f **/
 typedef enum {
-    NORESPONSE_S,
+    NORESPONSE_S = 0x40,
     READY_S,
     ACKNOWLEDGED_S,
     PLAYER_TWO_S,
