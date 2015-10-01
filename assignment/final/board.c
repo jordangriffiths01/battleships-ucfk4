@@ -20,7 +20,7 @@ void board_init(void) {
     cur_ship_num = 0;
     game_score = 0;
     reset_cur_ship(ship_lengths[cur_ship_num]);
-    cursor = tinygl_point(3,5);
+    cursor = tinygl_point(2,3);
     strike_position = tinygl_point(0,0);
 }
 
