@@ -11,8 +11,18 @@
 #include "tinygl.h"
 #define NO_POSITION  0xff
 
+static int8_t rcvChar;
 
-typedef enum {NORESPONSE_S, READY_S, ACKNOWLEDGED_S,  PLAYER_TWO_S, HIT_S, MISS_S, LOSER_S, PLAYON_S} states;
+typedef enum {
+    NORESPONSE_S,
+    READY_S,
+    ACKNOWLEDGED_S,
+    PLAYER_TWO_S,
+    HIT_S,
+    MISS_S,
+    LOSER_S,
+    PLAYON_S
+} states;
 
 
 void ir_send_status(states status);

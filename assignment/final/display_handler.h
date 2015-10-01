@@ -5,7 +5,6 @@
     @brief    display routine definitions
 **/
 
-
 #ifndef DISPLAY_HANDLER_H
 #define DISPLAY_HANDELR_H
 

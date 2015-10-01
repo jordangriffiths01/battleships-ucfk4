@@ -11,9 +11,9 @@
 #include "tinygl.h"
 #include "../fonts/font3x5_1.h"
 
-#define NUM_SHIPS 3
-#define WINNING_SCORE 9
-#define SHIP_LENGTHS {1,3,4}
+#define NUM_SHIPS 1
+#define WINNING_SCORE 2
+#define SHIP_LENGTHS {2,3,4}
 
 typedef enum rotation {HORIZ, VERT} rotation_t;
 typedef enum dir {DIR_N, DIR_E, DIR_S, DIR_W, DIR_DOWN, DIR_NONE} dir_t;
@@ -22,9 +22,9 @@ typedef enum strike_result {HIT, MISS} strike_result_t;
 
 
 typedef struct ship {
-  tinygl_point_t pos;
-  rotation_t rot;
-  int length;
+    tinygl_point_t pos;
+    rotation_t rot;
+    int length;
 } Ship;
 
 static uint8_t boards[2][DISPLAY_WIDTH];
