@@ -31,9 +31,8 @@ static void button_task_init(void) {
 
 static void led_task_init(void) {
   led_init();
-  flicker_on = 0;
-  spwm_period_set(&led_flicker, led_period);
-  spwm_duty_set(&led_flicker, led_duty);
+  spwm_period_set(&led_flicker, LED_PERIOD);
+  spwm_duty_set(&led_flicker, LED_DUTY);
   spwm_reset(&led_flicker);
 }
 
@@ -110,7 +109,7 @@ static void led_task(__unused__ void *data) {
       break;
 
     case RESULT:
-      flicker_on ? led_set(LED1, spwm_update(&led_flicker)) : led_set(LED1, 0);
+      last_result == HIT ? led_set(LED1, spwm_update(&led_flicker)) : led_set(LED1, 0);
       break;
   }
 }
@@ -151,7 +150,6 @@ static void ir_task(__unused__ void *data) {
       status = ir_get_status();
       switch (status) {
         case HIT_S:
-          flicker_on = 1;
           add_hit();
           last_result = HIT;
           change_phase(RESULT);

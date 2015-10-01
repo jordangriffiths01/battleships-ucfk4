@@ -30,10 +30,10 @@
 #define NAVSWITCH_TASK_RATE 100
 #define LED_TASK_RATE 100
 #define IR_TASK_RATE 100
-#define TEXT_DURATION 5
+#define TEXT_DURATION 3
 
-#define led_period 23
-#define led_duty 13
+#define LED_PERIOD 23
+#define LED_DUTY 13
 
 typedef enum phase {
   SPLASH, //Used for first display message.
@@ -52,7 +52,6 @@ typedef enum phase {
  static int tick;
  static int start_tick;
  static spwm_t led_flicker;
- static short flicker_on; //Flag used for led flashing. 1 flash (hit), 0 don't flash (miss).
 
 /** Initializes tinygl and sets a splash screen message. */
 static void display_task_init(void);
