@@ -22,7 +22,9 @@ typedef enum {
     HIT_S,
     MISS_S,
     LOSER_S,
-    PLAYON_S
+    PLAYON_S,
+    PLAY_AGAIN_S
+
 } states;
 
 

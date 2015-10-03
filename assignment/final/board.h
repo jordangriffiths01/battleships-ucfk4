@@ -12,7 +12,7 @@
 #include "../fonts/font3x5_1.h"
 
 #define NUM_SHIPS 1
-#define WINNING_SCORE 2
+#define WINNING_SCORE 1
 #define SHIP_LENGTHS {2,3,4}
 
 typedef enum rotation {HORIZ, VERT} rotation_t;
