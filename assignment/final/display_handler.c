@@ -9,116 +9,19 @@
 #include "display_handler.h"
 
 
-tinygl_point_t tick_points[NUM_TICK_POINTS] =
-{
-    {2,6},
-    {3,5},
-    {4,4},
-    {3,3},
-    {2,2},
-    {1,1},
-    {0,0},
-    {0,0},
-    {0,0},
+tinygl_point_t tick_points[NUM_TICK_POINTS] = {
+    {2,6}, {3,5}, {4,4}, {3,3}, {2,2}, {1,1}, {0,0}, {0,0}, {0,0},
 };
 
-tinygl_point_t cross_points[NUM_CROSS_POINTS] =
-{
-    {0,1},
-    {0,5},
-    {1,2},
-    {1,4},
-    {2,3},
-    {3,2},
-    {3,4},
-    {4,1},
-    {4,5},
+uint8_t ship_bitmap[DISPLAY_WIDTH] = {0x8, 0xA, 0x2A, 0x7F, 0x3E};
+
+uint8_t target_bitmap[3][DISPLAY_WIDTH] = {
+    {0x6B, 0x41, 0x2A, 0x41, 0x6B},
+    {0x63, 0x49, 0x1C, 0x49, 0x63},
+    {0x63, 0x41, 0x8, 0x41, 0x63},
 };
 
-tinygl_point_t target_points [NUM_TARGET_POINTS] =
-{
-    {0,0},
-    {1,0},
-    {3,0},
-    {4,0},
-    {0,1},
-    {4,1},
-    {2,1},
-    {0,3},
-    {2,3},
-    {4,3},
-    {2,5},
-    {0,5},
-    {4,5},
-    {0,6},
-    {1,6},
-    {3,6},
-    {4,6},
-};
-
-tinygl_point_t target_points_2 [NUM_TARGET_POINTS] =
-{
-    {0,0},
-    {1,0},
-    {3,0},
-    {4,0},
-    {0,1},
-    {4,1},
-    {2,2},
-    {1,3},
-    {2,3},
-    {3,3},
-    {2,4},
-    {0,5},
-    {4,5},
-    {0,6},
-    {1,6},
-    {3,6},
-    {4,6},
-};
-
-tinygl_point_t target_points_3 [NUM_TARGET_POINTS] =
-{
-    {0,0},
-    {1,0},
-    {3,0},
-    {4,0},
-    {0,1},
-    {4,1},
-    {2,3},
-    {2,3},
-    {2,3},
-    {2,3},
-    {2,3},
-    {0,5},
-    {4,5},
-    {0,6},
-    {1,6},
-    {3,6},
-    {4,6},
-};
-
-tinygl_point_t ship_points [NUM_SHIP_POINTS] =
-{
-    {4,1},
-    {4,2},
-    {4,3},
-    {4,4},
-    {4,5},
-    {3,0},
-    {3,1},
-    {3,2},
-    {3,3},
-    {3,4},
-    {3,5},
-    {3,6},
-    {2,1},
-    {2,3},
-    {2,5},
-    {1,1},
-    {1,3},
-    {0,3},
-};
+uint8_t cross_bitmap[DISPLAY_WIDTH] = {0x22, 0x14, 0x8, 0x14, 0x22};
 
 void initialise_display(void) {
     tinygl_init(DISPLAY_TASK_RATE);
@@ -150,7 +53,6 @@ void draw_cursor(void) {
 
 
 void draw_board(board_type_t board_type) {
-    tinygl_draw_point(tinygl_point(1,1), 1);
     uint8_t *board = get_board(board_type);
     int i, j;
     for (i = 0; i < DISPLAY_WIDTH; i++) {
@@ -176,21 +78,27 @@ int draw_tick_step(void) {
     if (i > NUM_TICK_POINTS) {
         return 0;
     }
-    tinygl_draw_point(tick_points[i], 1);
+    tinygl_draw_point(tick_points[i], ON);
     i++;
     return 1;
 }
 
 int draw_cross_step(void) {
-    static int i = 0;
-    if (i > NUM_CROSS_FLASHES * 2) {
+    static int step = 0;
+    if (step >= NUM_CROSS_FLASHES * 2) {
         return 0;
+
+    } else if (step % 2 == 0) {
+        int i, j;
+        for (i = 0; i < DISPLAY_WIDTH; i++) {
+            for (j = 0; j < DISPLAY_HEIGHT; j++) {
+                tinygl_draw_point(tinygl_point(i, j), cross_bitmap[i] >> j & 1);
+            }
+        }
+    } else {
+        tinygl_clear();
     }
-    int j;
-    for (j = 0; j < NUM_CROSS_POINTS; j++) {
-        tinygl_draw_point(cross_points[j], i%2);
-    }
-    i++;
+    step++;
     return 1;
 
 }
@@ -198,24 +106,23 @@ int draw_cross_step(void) {
 void draw_target_step(void) {
     static int step = 0;
     tinygl_clear();
-    int i;
-    for (i = 0; i < NUM_TARGET_POINTS; i++) {
-        if (step == 0) {tinygl_draw_point(target_points[i], 1); }
-        else if (step == 1) {tinygl_draw_point(target_points_2[i], 1); }
-        else if (step == 2) {tinygl_draw_point(target_points_3[i], 1); }
+    int i, j;
+    for (i = 0; i < DISPLAY_WIDTH; i++) {
+        for (j = 0; j < DISPLAY_HEIGHT; j++) {
+            tinygl_draw_point(tinygl_point(i, j), target_bitmap[step][i] >> j & 1);
+        }
     }
-    step = (step + 1) % 3;
+    step = (step + 1) % NUM_TARGET_STEPS;
 }
 
 void draw_ship_step(void) {
     static int step = 0;
     tinygl_clear();
-    int i;
-    for (i = 0; i < NUM_SHIP_POINTS; i++) {
-        int x = ship_points[i].x;
-        int y = ship_points[i].y + step - DISPLAY_HEIGHT;
-        tinygl_draw_point(tinygl_point(x,y), 1);
+    int i, j;
+    for (i = 0; i < DISPLAY_WIDTH; i++) {
+        for (j = 0; j < DISPLAY_HEIGHT; j++) {
+            tinygl_draw_point(tinygl_point(i, j), (ship_bitmap[i] << step) >> (j + DISPLAY_HEIGHT) & 1);
+        }
     }
-    step = (step + 1) % SHIP_STEP_NUMBER;
-
+    step = (step + 1) % NUM_SHIP_STEPS;
 }

@@ -128,8 +128,8 @@ void rotate_ship(void) {
 
 void reset_cur_ship(uint8_t newlen) {
     cur_ship.length = newlen;
-    cur_ship.pos = tinygl_point(0,0);
-    cur_ship.rot = HORIZ;
+    cur_ship.pos = tinygl_point(2,3);
+    cur_ship.rot = VERT;
 }
 
 

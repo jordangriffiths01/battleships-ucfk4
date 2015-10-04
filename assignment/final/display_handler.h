@@ -11,22 +11,23 @@
 #include "board.h"
 #include "tinygl.h"
 
-#define SCROLL_SPEED 25
+#define ON 1
+#define OFF 0
+
+#define SCROLL_SPEED 27
 #define DISPLAY_TASK_RATE 300
 
-#define CROSS_STEP_RATE 2
 #define TICK_STEP_RATE 5
-#define TARGET_STEP_RATE 4
-#define SHIP_STEP_RATE 4
-#define SHIP_STEP_NUMBER 18
-
 #define NUM_TICK_POINTS 9
-#define NUM_CROSS_POINTS 9
+
+#define CROSS_STEP_RATE 2
 #define NUM_CROSS_FLASHES 2
 
+#define TARGET_STEP_RATE 4
+#define NUM_TARGET_STEPS 3
 
-#define NUM_TARGET_POINTS 17
-#define NUM_SHIP_POINTS 18
+#define SHIP_STEP_RATE 4
+#define NUM_SHIP_STEPS 18
 
 
 void initialise_display(void);
