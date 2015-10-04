@@ -17,22 +17,20 @@
 #include "led.h"
 #include "tinygl.h"
 #include "spwm.h"
+#include "pacer.h"
 
 #include "board.h"
 #include "display_handler.h"
 #include "ir_handler.h"
 
 /* Define polling rates in Hz.  */
-#define BUTTON_TASK_RATE 20
-#define GAME_TASK_RATE 20
-#define NAVSWITCH_TASK_RATE 20
-#define LED_TASK_RATE 20
-#define IR_TASK_RATE 20
+#define NAVSWITCH_TASK_RATE 10
+#define LOOP_RATE 300
 
 #define RESULT_DURATION 3
 #define GAMEOVER_DURATION 6
-#define LED_PERIOD (LED_TASK_RATE / 4)
-#define LED_DUTY (LED_TASK_RATE / 6)
+#define LED_PERIOD (LOOP_RATE / 4)
+#define LED_DUTY (LOOP_RATE / 6)
 
 typedef enum phase {
     SPLASH, //Used for first display message.
@@ -47,16 +45,6 @@ typedef enum phase {
     PLAY_AGAIN
 } phase_t;
 
-
-
-typedef struct s_Acknowledgement {
-    int ack_status;
-    uint16_t time_out_count;
-    uint16_t time_out_period;
-} acknowledgement;
-
-
-static acknowledgement ack;
 static phase_t game_phase;
 static strike_result_t last_result;
 static int tick;
@@ -67,9 +55,6 @@ static spwm_t led_flicker;
 
 /** Initializes tinygl and sets a splash screen message. */
 static void display_task_init(void);
-
-static void reset_acknowledge(uint16_t time_out_period);
-
 
 
 static void navswitch_task_init(void);
@@ -86,29 +71,28 @@ static void ir_task_init(void);
 /**
 Handles navswitch tasks dependant on the game phase.
 */
-static void navswitch_task(__unused__ void *data);
+static void navswitch_task();
 /**
 Handles button tasks dependant on the current phase.
 */
-static void button_task(__unused__ void *data);
+static void button_task();
 /**
 Handles blue LED tasks dependant on the game phase.
 */
-static void led_task(__unused__ void *data);
+static void led_task();
 /**
 Handles display tasks dependant on the current game phase.
 */
-static void display_task(__unused__ void *data);
+static void display_task();
 /**
 Runs any IR tasks dependant on the current game phase.
 */
-static void ir_task(__unused__ void *data);
+static void ir_task();
 /**
 handles switching between time oriented game phases.
 */
-static void game_task(__unused__ void *data);
+static void game_task();
 
-static void reset_game(void);
 
 /**
 Swaps states to the provided game phase enum value.

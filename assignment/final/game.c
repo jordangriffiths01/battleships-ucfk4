@@ -53,7 +53,7 @@ static void ir_task_init(void) {
 /**
 Handles navswitch tasks dependant on the game phase.
 */
-static void navswitch_task(__unused__ void *data) {
+static void navswitch_task() {
 
     dir_t dir;
     switch(game_phase) {
@@ -83,7 +83,7 @@ static void navswitch_task(__unused__ void *data) {
 /**
 Handles button tasks dependant on the current phase.
 */
-static void button_task(__unused__ void *data) {
+static void button_task() {
     button_update();
     if (button_push_event_p(BUTTON1)) {
         switch (game_phase) {
@@ -115,7 +115,7 @@ static void button_task(__unused__ void *data) {
 /**
 Handles blue LED tasks dependant on the game phase.
 */
-static void led_task(__unused__ void *data) {
+static void led_task() {
 
     switch (game_phase) {
         case PLACING:
@@ -140,7 +140,7 @@ static void led_task(__unused__ void *data) {
 /**
 Handles display tasks dependant on the current game phase.
 */
-static void display_task(__unused__ void *data) {
+static void display_task() {
     switch (game_phase) {
 
         case PLACING:
@@ -162,61 +162,12 @@ static void display_task(__unused__ void *data) {
 /**
 Runs any IR tasks dependant on the current game phase.
 */
-static void ir_task(__unused__ void *data) {
+static void ir_task() {
     states status;
     uint8_t position;
     switch (game_phase){
 
         case READY:
-            // switch(player){
-            //     case 1:
-            //         if(ack.ack_status == 0){
-            //             ir_send_status(PLAYER_TWO_S);
-            //             if(ir_get_status() == READY_P2){
-            //                 ack.ack_status = 1;
-            //             }
-            //         }
-            //         else{
-            //             ir_send_status(READY_P1);
-            //
-            //             reset_acknowledge(0);
-            //             change_phase(AIM);
-            //
-            //         }
-            //         break;
-            //
-            //     case 0:
-            //
-            //         if(ir_get_status() == PLAYER_TWO_S){
-            //             player = 2;
-            //
-            //         }
-            //         break;
-            //
-            //
-            //     case 2:
-            //         if(ack.ack_status == 0){
-            //             ir_send_status(READY_P2);
-            //             ack.time_out_count += 1;
-            //
-            //              if(ir_get_status() == READY_P1){
-            //                  led_set(LED1, 1);
-            //                  ack.ack_status = 1;
-            //              }
-            //         }
-            //         else{
-            //             reset_acknowledge(0);
-            //
-            //             change_phase(WAIT);
-            //         }
-            //         break;
-            //
-            //     break;
-
-            //
-            // }
-            //
-            //
             if (ir_get_status() == PLAYER_TWO_S) { change_phase(WAIT); }
             break;
 
@@ -270,14 +221,14 @@ static void ir_task(__unused__ void *data) {
 /**
 handles switching between time oriented game phases.
 */
-static void game_task(__unused__ void *data) {
+static void game_task() {
     tick += 1;
 
     switch(game_phase) {
 
         case RESULT:
             start_tick += 1;
-            if (start_tick > GAME_TASK_RATE * RESULT_DURATION) {
+            if (start_tick > LOOP_RATE * RESULT_DURATION) {
                 start_tick = 0;
                 if (is_winner()) {
                     ir_send_status(LOSER_S);
@@ -291,7 +242,7 @@ static void game_task(__unused__ void *data) {
 
         case ENDRESULT:
             start_tick += 1;
-            if (start_tick > GAME_TASK_RATE * GAMEOVER_DURATION) {
+            if (start_tick > LOOP_RATE * GAMEOVER_DURATION) {
                 start_tick = 0;
 
                 change_phase(PLAY_AGAIN);
@@ -359,12 +310,6 @@ dir_t get_navswitch_dir(void) {
     return DIR_NONE;
 }
 
-static void reset_acknowledge(uint16_t time_out_period){
-    ack.ack_status = 0;
-    ack.time_out_period = time_out_period;
-    ack.time_out_count = 0;
-}
-
 /**
 Re-initializes states to re-start game.
 */
@@ -380,15 +325,6 @@ void reset_game(void){
 
 int main (void)
 {
-    task_t tasks[] =
-    {
-        {.func = display_task, .period = TASK_RATE / DISPLAY_TASK_RATE},
-        {.func = navswitch_task, .period = TASK_RATE / NAVSWITCH_TASK_RATE},
-        {.func = button_task, .period = TASK_RATE / BUTTON_TASK_RATE},
-        {.func = game_task, .period = TASK_RATE / GAME_TASK_RATE},
-        {.func = led_task, .period = TASK_RATE / LED_TASK_RATE},
-        {.func = ir_task, .period = TASK_RATE / IR_TASK_RATE},
-    };
 
     system_init ();
     display_task_init ();
@@ -398,6 +334,20 @@ int main (void)
     led_task_init();
     ir_task_init();
 
-    task_schedule (tasks, ARRAY_SIZE (tasks));
-    return 0;
+    pacer_init(LOOP_RATE);
+
+    while(1) {
+        pacer_wait();
+        tick += 1;
+        if (tick > LOOP_RATE / NAVSWITCH_TASK_RATE) {
+            tick = 0;
+            navswitch_task();
+        }
+        button_task();
+        game_task();
+        led_task();
+        ir_task();
+        display_task();
+
+    }
 }
