@@ -11,7 +11,7 @@ initialisation and task scheduling.
 
 static void display_task_init(void) {
     initialise_display();
-    tinygl_text("  PUSH TO START");
+    change_phase(SPLASH);
 }
 
 
@@ -25,7 +25,7 @@ static void game_task_init(void) {
     // reset_acknowledge(65000);
     game_phase = SPLASH;
     tick = 0;
-    start_tick = 0;
+    phase_tick = 0;
 
 }
 
@@ -119,18 +119,23 @@ static void led_task() {
 
     switch (game_phase) {
         case PLACING:
-            case AIM:
-                led_set(LED1, 1);
-                break;
+        case AIM:
+            led_set(LED1, 1);
+            break;
 
         case SPLASH:
-            case READY:
-            case WAIT:
+        case READY:
+        case WAIT:
             led_set(LED1, 0);
             break;
 
         case RESULT:
+        case RESULT_GRAPHIC:
             last_result == HIT ? led_set(LED1, spwm_update(&led_flicker)) : led_set(LED1, 0);
+            break;
+
+        case ENDRESULT:
+            is_winner() ? led_set(LED1, 1) : led_set(LED1, 0);
             break;
 
     }
@@ -142,19 +147,46 @@ Handles display tasks dependant on the current game phase.
 */
 static void display_task() {
     switch (game_phase) {
+        case SPLASH:
+            phase_tick += 1;
+            if (phase_tick > LOOP_RATE / SHIP_STEP_RATE) {
+                phase_tick = 0;
+                draw_ship_step();
+            }
+            break;
 
         case PLACING:
-        tinygl_clear();
-        draw_board(THIS_BOARD);
-        draw_ship();
-        break;
+            tinygl_clear();
+            draw_board(THIS_BOARD);
+            draw_ship();
+            break;
 
         case AIM:
-        tinygl_clear();
-        draw_board(TARGET_BOARD);
-        draw_cursor();
-        break;
+            tinygl_clear();
+            draw_board(TARGET_BOARD);
+            draw_cursor();
+            break;
 
+        case RESULT_GRAPHIC:
+            phase_tick += 1;
+            if (last_result == HIT && phase_tick > LOOP_RATE / TICK_STEP_RATE) {
+                phase_tick = 0;
+                if (!draw_tick_step()) {change_phase(RESULT); }
+
+            } else if (last_result == MISS && phase_tick > LOOP_RATE / CROSS_STEP_RATE) {
+                phase_tick = 0;
+                if (!draw_cross_step()) {change_phase(RESULT); }
+            }
+            break;
+
+        case WAIT:
+        case TRANSFER:
+            phase_tick += 1;
+            if (phase_tick > LOOP_RATE / TARGET_STEP_RATE) {
+                phase_tick = 0;
+                draw_target_step();
+            }
+            break;
     }
     tinygl_update();
 }
@@ -179,12 +211,12 @@ static void ir_task() {
                 case HIT_S:
                     add_hit();
                     last_result = HIT;
-                    change_phase(RESULT);
+                    change_phase(RESULT_GRAPHIC);
                     break;
 
                 case MISS_S:
                     last_result = MISS;
-                    change_phase(RESULT);
+                    change_phase(RESULT_GRAPHIC);
                     break;
                 }
             break;
@@ -222,14 +254,12 @@ static void ir_task() {
 handles switching between time oriented game phases.
 */
 static void game_task() {
-    tick += 1;
-
     switch(game_phase) {
 
         case RESULT:
-            start_tick += 1;
-            if (start_tick > LOOP_RATE * RESULT_DURATION) {
-                start_tick = 0;
+            phase_tick += 1;
+            if (phase_tick > LOOP_RATE * RESULT_DURATION) {
+                phase_tick = 0;
                 if (is_winner()) {
                     ir_send_status(LOSER_S);
                     change_phase(ENDRESULT);
@@ -241,15 +271,14 @@ static void game_task() {
             break;
 
         case ENDRESULT:
-            start_tick += 1;
-            if (start_tick > LOOP_RATE * GAMEOVER_DURATION) {
-                start_tick = 0;
+            phase_tick += 1;
+            if (phase_tick > LOOP_RATE * GAMEOVER_DURATION) {
+                phase_tick = 0;
 
                 change_phase(PLAY_AGAIN);
 
             }
             break;
-
 
     }
 }
@@ -262,12 +291,17 @@ void change_phase(phase_t new_phase) {
     switch (new_phase) {
         case SPLASH:
             tinygl_clear();
-            tinygl_text("  PUSH TO START");
+            //draw_ship_icon();
+            //tinygl_text("  PUSH TO START");
             break;
 
         case READY:
             tinygl_clear();
-            tinygl_text("  READY");
+            tinygl_text("  READY?");
+            break;
+
+        case RESULT_GRAPHIC:
+            tinygl_clear();
             break;
 
         case RESULT:
@@ -277,15 +311,14 @@ void change_phase(phase_t new_phase) {
 
         case WAIT:
             tinygl_clear();
-            tinygl_text("  WAIT FOR OTHER PLAYER");
             break;
 
         case ENDRESULT:
             tinygl_clear();
             if (game_phase == RESULT) {
-                tinygl_text("  WINNER!");
+                tinygl_text("  YOU WIN!");
             } else {
-                tinygl_text("  LOSER!");
+                tinygl_text("  YOU LOSE!");
             }
             break;
 
@@ -315,12 +348,11 @@ Re-initializes states to re-start game.
 */
 void reset_game(void){
     tick = 0;
-    start_tick = 0;
+    phase_tick = 0;
     board_init();
     change_phase(PLACING);
 
 }
-
 
 
 int main (void)

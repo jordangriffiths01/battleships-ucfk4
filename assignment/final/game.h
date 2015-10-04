@@ -11,7 +11,6 @@
 
 
 #include "system.h"
-#include "task.h"
 #include "navswitch.h"
 #include "button.h"
 #include "led.h"
@@ -38,6 +37,7 @@ typedef enum phase {
     READY, //Waiting for a player to choose player1.
     AIM,   //Active turn phase - player1 selects strike location.
     FIRE,  //Strike location selected, sending IR to other player.
+    RESULT_GRAPHIC,
     RESULT, //Hit or miss message shown to active player
     TRANSFER, //Next turn intermediate phase
     WAIT,    //Player 2 phase, inactive state waiting for IR.
@@ -48,7 +48,7 @@ typedef enum phase {
 static phase_t game_phase;
 static strike_result_t last_result;
 static int tick;
-static int start_tick;
+static int phase_tick;
 static int player;
 static spwm_t led_flicker;
 
