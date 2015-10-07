@@ -27,7 +27,7 @@
 
 
 /* Define polling rates in Hz.  */
-#define NAVSWITCH_TASK_RATE 10
+#define NAVSWITCH_TASK_RATE 20
 #define LOOP_RATE 300
 
 #define RESULT_DURATION 2.5

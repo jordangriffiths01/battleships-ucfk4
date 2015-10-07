@@ -381,6 +381,7 @@ void change_phase(phase_t new_phase) {
         default:
             break;
     }
+    phase_tick = 0;
     game_phase = new_phase;
 }
 

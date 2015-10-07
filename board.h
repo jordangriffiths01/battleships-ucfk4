@@ -11,7 +11,6 @@
 
 /** Required library modules */
 #include "tinygl.h"
-#include "../fonts/font3x5_1.h"
 
 
 /** Game customisation parameters */
