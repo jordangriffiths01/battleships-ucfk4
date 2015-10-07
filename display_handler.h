@@ -22,7 +22,7 @@
 #define SCROLL_SPEED 27
 #define DISPLAY_TASK_RATE 300
 
-#define TICK_STEP_RATE 5
+#define TICK_STEP_RATE 10
 #define NUM_TICK_POINTS 9
 
 #define CROSS_STEP_RATE 2
