@@ -48,8 +48,8 @@ You can customise the game by altering the following parameters in the file `boa
 ## Documentation
 If you have doxygen installed on your system, you can  generate html documentation for the project:
 
-    - `cd doc`
-    - `doxygen doxygen.config`
+- `cd doc`
+- `doxygen doxygen.config`
 
 Then open html/index.html in any browser
 
