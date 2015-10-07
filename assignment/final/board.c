@@ -9,6 +9,21 @@
 #include "board.h"
 
 
+/** Board state variable */
+static Ship cur_ship;
+static uint8_t cur_ship_num;
+static tinygl_point_t cursor;
+static tinygl_point_t strike_position;
+static uint8_t game_score;
+
+
+/**
+Game boards (this and target) stored as bitmaps
+Each 8-bit integer represents a column, with each bit representing a row
+*/
+static uint8_t boards[2][DISPLAY_WIDTH];
+
+
 /** Define ship lengths array at runtime */
 uint8_t ship_lengths[NUM_SHIPS] = SHIP_LENGTHS;
 
@@ -75,7 +90,7 @@ bool is_valid_position(void)
 Verify that strike location was not a previous successful hit.
 @return true (1) if position is valid, false (0) otherwise.
 */
-bool is_valid_strike()
+bool is_valid_strike(void)
 {
     strike_position = tinygl_point(cursor.x, cursor.y);
     return !(boards[TARGET_BOARD][cursor.x] >> cursor.y & 1);

@@ -10,6 +10,14 @@
 #include "game.h"
 
 
+/** Game state variables */
+static phase_t game_phase;
+static strike_result_t last_result;
+static int tick;
+static int phase_tick;
+static spwm_t led_flicker;
+
+
 /**
 Display related routines to be run before game loop
 */
@@ -74,30 +82,32 @@ static void ir_task_init(void)
 /**
 Handles navswitch tasks dependant on the game phase.
 */
-static void navswitch_task()
+static void navswitch_task(void)
 {
     dir_t dir;
     switch(game_phase) {
 
         case PLACING:
-        dir = get_navswitch_dir();
-        if (dir >= DIR_N && dir <= DIR_W) {
-            move_ship(dir);
-        } else if (dir == DIR_DOWN && place_ship() && !next_ship()) {
-            ir_send_status(READY_S);
-            change_phase(READY);
-        }
-        break;
+            dir = get_navswitch_dir();
+            if (dir >= DIR_N && dir <= DIR_W) {
+                move_ship(dir);
+            } else if (dir == DIR_DOWN && place_ship() && !next_ship()) {
+                change_phase(READY);
+            }
+            break;
 
         case AIM:
-        dir = get_navswitch_dir();
-        if (dir >= DIR_N && dir <= DIR_W) {
-            move_cursor(dir);
-        } else if(dir == DIR_DOWN && is_valid_strike()){
-            ir_send_strike(get_cursor());
-            change_phase(FIRE);
-        }
-        break;
+            dir = get_navswitch_dir();
+            if (dir >= DIR_N && dir <= DIR_W) {
+                move_cursor(dir);
+            } else if(dir == DIR_DOWN && is_valid_strike()){
+                ir_send_strike(get_cursor());
+                change_phase(FIRE);
+            }
+            break;
+
+        default:
+            break;
     }
 }
 
@@ -105,7 +115,7 @@ static void navswitch_task()
 /**
 Handles button tasks dependant on the current phase.
 */
-static void button_task()
+static void button_task(void)
 {
     button_update();
     if (button_push_event_p(BUTTON1)) {
@@ -131,6 +141,9 @@ static void button_task()
                 ir_send_status(PLAY_AGAIN_S);
                 reset_game();
                 break;
+
+            default:
+                break;
         }
     }
 }
@@ -139,7 +152,7 @@ static void button_task()
 /**
 Handles blue LED tasks dependant on the game phase.
 */
-static void led_task() {
+static void led_task(void) {
 
     switch (game_phase) {
         case PLACING:
@@ -162,6 +175,9 @@ static void led_task() {
             is_winner() ? led_set(LED1, 1) : led_set(LED1, 0);
             break;
 
+        default:
+            break;
+
     }
 
 }
@@ -170,7 +186,7 @@ static void led_task() {
 /**
 Handles display tasks dependant on the current game phase.
 */
-static void display_task() {
+static void display_task(void) {
     switch (game_phase) {
         case SPLASH:
             phase_tick += 1;
@@ -212,6 +228,9 @@ static void display_task() {
                 draw_target_step();
             }
             break;
+
+        default:
+            break;
     }
     tinygl_update();
 }
@@ -220,7 +239,7 @@ static void display_task() {
 /**
 Runs any IR tasks dependant on the current game phase.
 */
-static void ir_task() {
+static void ir_task(void) {
     states status;
     uint8_t position;
     switch (game_phase){
@@ -241,6 +260,9 @@ static void ir_task() {
                 case MISS_S:
                     last_result = MISS;
                     change_phase(RESULT_GRAPHIC);
+                    break;
+
+                default:
                     break;
                 }
             break;
@@ -271,13 +293,15 @@ static void ir_task() {
             }
             break;
 
+        default:
+            break;
     }
 }
 
 /**
 handles switching between time oriented game phases.
 */
-static void game_task() {
+static void game_task(void) {
     switch(game_phase) {
 
         case RESULT:
@@ -302,6 +326,9 @@ static void game_task() {
                 change_phase(PLAY_AGAIN);
 
             }
+            break;
+
+        default:
             break;
     }
 }
@@ -349,6 +376,9 @@ void change_phase(phase_t new_phase) {
         case PLAY_AGAIN:
             tinygl_clear();
             tinygl_text("PUSH TO PLAY AGAIN!");
+            break;
+
+        default:
             break;
     }
     game_phase = new_phase;

@@ -25,9 +25,6 @@ board.o: board.c ../../drivers/avr/system.h ../../drivers/display.h ../../fonts/
 display_handler.o: display_handler.c ../../drivers/avr/system.h ../../drivers/display.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/tinygl.h board.h display_handler.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: game.c ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/pacer.h ../../utils/spwm.h ../../utils/tinygl.h board.h display_handler.h game.h ir_handler.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
 ir_handler.o: ir_handler.c ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h ir_handler.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -95,7 +92,7 @@ game.hex: game.out
 
 # Target: clean project.
 .PHONY: clean
-clean: 
+clean:
 	-$(DEL) *.o *.out *.hex
 
 
@@ -103,5 +100,3 @@ clean:
 .PHONY: program
 program: game.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash game.hex; dfu-programmer atmega32u2 start
-
-

@@ -52,15 +52,6 @@ typedef enum phase {
 } phase_t;
 
 
-/** Game state variables */
-static phase_t game_phase;
-static strike_result_t last_result;
-static int tick;
-static int phase_tick;
-static int player;
-static spwm_t led_flicker;
-
-
 /**
 Display related routines to be run before game loop
 */
@@ -100,37 +91,37 @@ static void ir_task_init(void);
 /**
 Handles navswitch tasks dependant on the game phase.
 */
-static void navswitch_task();
+static void navswitch_task(void);
 
 
 /**
 Handles button tasks dependant on the current phase.
 */
-static void button_task();
+static void button_task(void);
 
 
 /**
 Handles blue LED tasks dependant on the game phase.
 */
-static void led_task();
+static void led_task(void);
 
 
 /**
 Handles display tasks dependant on the current game phase.
 */
-static void display_task();
+static void display_task(void);
 
 
 /**
 Runs any IR tasks dependant on the current game phase.
 */
-static void ir_task();
+static void ir_task(void);
 
 
 /**
 handles switching between time oriented game phases.
 */
-static void game_task();
+static void game_task(void);
 
 
 /**

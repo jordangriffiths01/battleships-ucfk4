@@ -15,8 +15,8 @@
 
 
 /** Game customisation parameters */
-#define NUM_SHIPS 1
-#define WINNING_SCORE 1
+#define NUM_SHIPS 3
+#define WINNING_SCORE 9
 #define SHIP_LENGTHS {2,3,4}
 
 
@@ -33,21 +33,6 @@ typedef struct ship {
     rotation_t rot;
     int length;
 } Ship;
-
-
-/**
-Game boards (this and target) stored as bitmaps
-Each 8-bit integer represents a column, with each bit representing a row
-*/
-static uint8_t boards[2][DISPLAY_WIDTH];
-
-
-/** Board state variable */
-static Ship cur_ship;
-static uint8_t cur_ship_num;
-static tinygl_point_t cursor;
-static tinygl_point_t strike_position;
-static uint8_t game_score;
 
 
 /**
