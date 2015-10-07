@@ -98,9 +98,9 @@ void display_result(strike_result_t last_result)
 {
     tinygl_clear();
     if (last_result == MISS) {
-        tinygl_text("  MISS");
+        tinygl_text(" MISS");
     } else {
-        tinygl_text("  HIT");
+        tinygl_text(" HIT  ");
     }
 }
 
@@ -117,6 +117,7 @@ int draw_tick_step(void)
         return 0;
     }
     tinygl_draw_point(tick_points[i], ON);
+    // tinygl_draw_point(tick_points[i+1], ON);
     i++;
     return 1;
 }

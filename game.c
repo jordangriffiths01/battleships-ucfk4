@@ -375,7 +375,7 @@ void change_phase(phase_t new_phase) {
 
         case PLAY_AGAIN:
             tinygl_clear();
-            tinygl_text("PUSH TO PLAY AGAIN!");
+            tinygl_text("  PUSH TO PLAY AGAIN!");
             break;
 
         default:
