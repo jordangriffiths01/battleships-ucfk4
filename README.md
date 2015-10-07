@@ -3,30 +3,38 @@
 A 2-player battleships game developed to run on the UCFK4 micro-controller.
 
 **Developers**: Jordan Griffiths (jlg108) and Jonty Trombik (jat157)
-**Started**: September 2015
+
+**Projected Started**: September 2015
+
 
 ## Getting set up
 
 1. Get the AVR Compilation Tools:
-    - `$ sudo apt-get install git gcc-avr binutils-avr avr-libc dfu-programmer`
+    ```
+    $ sudo apt-get install git gcc-avr binutils-avr avr-libc dfu-programmer
+    ```
 
 
 2. Clone the UCFK4 git repository: This contains all the necessary drivers and utilities to run the battleships application
-    - `git clone https://eng-git.canterbury.ac.nz/mph/ucfk4.git`
+```
+$ git clone https://eng-git.canterbury.ac.nz/mph/ucfk4.git
+```
 
 
 3. Clone the Battleships application: This repository needs to be cloned into the apps directory in the ucfk4 folder structure
-    - `cd ucfk4/apps`
-    - `git clone https://eng-git.canterbury.ac.nz/ence260-2015/team1.git`
-    - `cd team1`
+```
+$ cd ucfk4/apps
+$ git clone https://eng-git.canterbury.ac.nz/ence260-2015/team1.git
+$ cd team1
+```
 
 ## Usage
 
 From within this directory, the following commands can be run
 
-  - `make`: Compiles source code and builds object files
-  - `make program`: Runs `make` and then loads program into UCFK4 flash memory
-  - `make clean`: Remove old object files from directory
+- `make`: Compiles source code and builds object files
+- `make program`: Runs `make` and then loads program into UCFK4 flash memory
+- `make clean`: Remove old object files from directory
 
 Run `make program` to start playing!
 
@@ -41,17 +49,19 @@ Run `make program` to start playing!
 
 ## Customisation
 You can customise the game by altering the following parameters in the file `board.h`:
-  - `NUM_SHIPS`: The number of ships each player has
-  - `SHIP_LENGTHS`: The length of each ship (must have length `NUM_SHIPS`)
-  - `WINNING_SCORE`: Must be the sum of `SHIP_LENGTHS` array
+- `NUM_SHIPS`: The number of ships each player has
+- `SHIP_LENGTHS`: The length of each ship (must have length `NUM_SHIPS`)
+- `WINNING_SCORE`: Must be the sum of `SHIP_LENGTHS` array
 
 ## Documentation
 If you have doxygen installed on your system, you can  generate html documentation for the project:
 
-- `cd doc`
-- `doxygen doxygen.config`
+```
+$ cd doc
+$ doxygen doxygen.config
+```
 
-Then open html/index.html in any browser
+Then open `html/index.html` in any browser
 
 ## File Structure
   - `game.c`, `game.h`: Contains the main game task scheduling, logic and game phase tracking
