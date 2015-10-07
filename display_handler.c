@@ -112,13 +112,14 @@ Animation is a tick drawn one dot at a time
  */
 int draw_tick_step(void)
 {
-    static int i = 0;
-    if (i > NUM_TICK_POINTS) {
+    static int step = 0;
+    if (step > NUM_TICK_POINTS) {
+        step = 0;
         return 0;
     }
-    tinygl_draw_point(tick_points[i], ON);
-    // tinygl_draw_point(tick_points[i+1], ON);
-    i++;
+
+    tinygl_draw_point(tick_points[step], ON);
+    step++;
     return 1;
 }
 
@@ -132,6 +133,7 @@ int draw_cross_step(void)
 {
     static int step = 0;
     if (step >= NUM_CROSS_FLASHES * 2) {
+        step = 0;
         return 0;
 
     } else if (step % 2 == 0) {
