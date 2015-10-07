@@ -46,7 +46,8 @@ You can customise the game by altering the following parameters in the file `boa
   - `WINNING_SCORE`: Must be the sum of `SHIP_LENGTHS` array
 
 ## Documentation
-If you have doxygen installed on your system, you can  generate html documentation for the project
+If you have doxygen installed on your system, you can  generate html documentation for the project:
+
     - `cd doc`
     - `doxygen doxygen.config`
 
