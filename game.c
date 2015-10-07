@@ -342,8 +342,6 @@ void change_phase(phase_t new_phase) {
     switch (new_phase) {
         case SPLASH:
             tinygl_clear();
-            //draw_ship_icon();
-            //tinygl_text("  PUSH TO START");
             break;
 
         case READY:

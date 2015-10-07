@@ -172,17 +172,29 @@ void draw_target_step(void)
 
 /**
 Draw next frame for ship animation (looping).
-Animation consists of ship logo moving right to left across screen
+Animation consists of ship logo moving right to left across screen, followed
+by user prompt 'Push To Start!'
  */
-void draw_ship_step(void)
-{
-    static int step = 0;
-    tinygl_clear();
-    int i, j;
-    for (i = 0; i < DISPLAY_WIDTH; i++) {
-        for (j = 0; j < DISPLAY_HEIGHT; j++) {
-            tinygl_draw_point(tinygl_point(i, j), (ship_bitmap[i] << step) >> (j + DISPLAY_HEIGHT) & 1);
-        }
-    }
-    step = (step + 1) % NUM_SHIP_STEPS;
-}
+ void draw_ship_step(void)
+ {
+     static int step = 0;
+     static bool text_on = 0;
+     int i, j;
+     if (step == 2 * DISPLAY_HEIGHT + 1) {
+         tinygl_text("  PUSH TO START!");
+         text_on = 1;
+     }
+     else if (step == 0) {
+         tinygl_clear();
+         text_on = 0;
+     }
+
+     if (!text_on) {
+         for (i = 0; i < DISPLAY_WIDTH; i++) {
+             for (j = 0; j < DISPLAY_HEIGHT; j++) {
+                 tinygl_draw_point(tinygl_point(i, j), (ship_bitmap[i] << step) >> (j + DISPLAY_HEIGHT) & 1);
+             }
+         }
+     }
+     step = (step + 1) % NUM_SHIP_STEPS;
+ }

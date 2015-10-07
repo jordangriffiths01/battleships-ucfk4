@@ -33,7 +33,7 @@
 #define NUM_TARGET_STEPS 2
 
 #define SHIP_STEP_RATE 4
-#define NUM_SHIP_STEPS 18
+#define NUM_SHIP_STEPS 40
 
 
 /**
