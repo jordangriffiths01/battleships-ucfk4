@@ -1,17 +1,23 @@
-/** @file     board.c
-    @authors  Jordan Griffiths & Jonty Trombik
-    @date     27 September 2015
+/** @file       board.c
+    @authors    Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
+    @date       27 September 2015
 
-    @brief    Game board initialisation and manipulation routines
-    for Battleships
+    @brief      Game board initialisation and manipulation routines
+                for Battleships
 **/
 
 #include "board.h"
 
+
+/** Define ship lengths array at runtime */
 uint8_t ship_lengths[NUM_SHIPS] = SHIP_LENGTHS;
 
 
-void board_init(void) {
+/**
+Initialise logic, gameboard and cursor positions
+*/
+void board_init(void)
+{
     int i;
     for (i = 0; i < DISPLAY_WIDTH; i++) {
         boards[THIS_BOARD][i] = 0;
@@ -25,7 +31,12 @@ void board_init(void) {
 }
 
 
-bool place_ship(void) {
+/**
+load current ship into game board, if position is valid.
+@return true (1) if ship placement was successful, false (0) otherwise.
+*/
+bool place_ship(void)
+{
     if (is_valid_position()) {
         uint8_t i;
         for (i = 0; i < cur_ship.length; i++) {
@@ -42,7 +53,12 @@ bool place_ship(void) {
 }
 
 
-bool is_valid_position(void) {
+/**
+Verify that current ship position is non-overlapping with other placed ships
+@return true (1) if position is valid, false (0) otherwise.
+*/
+bool is_valid_position(void)
+{
     uint8_t i;
     for (i = 0; i < cur_ship.length; i++) {
         if (cur_ship.rot == HORIZ && boards[THIS_BOARD][cur_ship.pos.x + i] & BIT(cur_ship.pos.y)) {
@@ -55,29 +71,53 @@ bool is_valid_position(void) {
 }
 
 
-bool is_valid_strike() {
+/**
+Verify that strike location was not a previous successful hit.
+@return true (1) if position is valid, false (0) otherwise.
+*/
+bool is_valid_strike()
+{
     strike_position = tinygl_point(cursor.x, cursor.y);
     return !(boards[TARGET_BOARD][cursor.x] >> cursor.y & 1);
 }
 
 
-void add_hit(void) {
+/**
+Add successful strike location to target board and increment score
+*/
+void add_hit(void)
+{
     boards[TARGET_BOARD][strike_position.x] |= BIT(strike_position.y);
     game_score += 1;
 }
 
 
-bool is_hit(tinygl_point_t pos) {
+/**
+Check whether enemy strike hits a ship.
+@return true (1) for hit, false (0) for miss.
+*/
+bool is_hit(tinygl_point_t pos)
+{
     return (boards[THIS_BOARD][pos.x] >> pos.y) & 1;
 }
 
 
-bool is_winner(void) {
+/**
+Check whether current game score is such that all ships have been sunk.
+@return true (1) if all enemy ships sunk, false (0) otherwise.
+*/
+bool is_winner(void)
+{
     return game_score == WINNING_SCORE;
 }
 
 
-void move_ship(dir_t dir) {
+/**
+Move the ship currently being placed.
+@param dir direction to move ship.
+*/
+void move_ship(dir_t dir)
+{
     uint8_t x_offset = cur_ship.rot == HORIZ? cur_ship.length - 1:0;
     uint8_t y_offset = cur_ship.rot == VERT? cur_ship.length - 1:0;
 
@@ -93,7 +133,12 @@ void move_ship(dir_t dir) {
 }
 
 
-void move_cursor(dir_t dir) {
+/**
+Move the strike cursor.
+@param dir direction to move cursor.
+*/
+void move_cursor(dir_t dir)
+{
 
     if (dir == DIR_W) {
         cursor.x -= cursor.x  == 0? 0 : 1;
@@ -107,33 +152,66 @@ void move_cursor(dir_t dir) {
 }
 
 
-Ship* get_ship(void) { return &cur_ship; }
+/**
+Accessor method for external modules to access ship being placed
+@return pointer to current ship structure
+*/
+Ship* get_ship(void)
+{
+    return &cur_ship;
+}
 
 
+/**
+Accessor method for external modules to access cursor position
+@return cursor location
+*/
+tinygl_point_t get_cursor(void)
+{
+    return cursor;
+}
 
-tinygl_point_t get_cursor(void) {return cursor; }
 
-
-
-uint8_t* get_board(board_type_t board_type) {
+/**
+Accessor method for external modules to access gameboard
+@param board_type specifies which game board (this or target)
+@return pointer to board bitmap
+*/
+uint8_t* get_board(board_type_t board_type)
+{
     return boards[board_type];
 }
 
 
-void rotate_ship(void) {
+/**
+Rotate current ship by 90 degrees
+*/
+void rotate_ship(void)
+{
     cur_ship.pos = tinygl_point(0,0);
     cur_ship.rot = (cur_ship.rot + 1) % 2;
 }
 
 
-void reset_cur_ship(uint8_t newlen) {
+/**
+Reset current ship to be placed with a new length
+(used after previous ship has been placed).
+@param newlen length of next ship to be placed.
+*/
+void reset_cur_ship(uint8_t newlen)
+{
     cur_ship.length = newlen;
     cur_ship.pos = tinygl_point(2,3);
     cur_ship.rot = VERT;
 }
 
 
-bool next_ship(void) {
+/**
+Attempts to generate next ship to be placed.
+@returns false (0) if no more ships, true (1) otherwise
+*/
+bool next_ship(void)
+{
     cur_ship_num++;
     if (cur_ship_num == NUM_SHIPS) {
         return 0;

@@ -1,60 +1,81 @@
-/** @file     game.c
-@authors  Jordan Griffiths & Jonty Trombik
-@date     27 September 2015
+/** @file       game.c
+    @authors    Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
+    @date       27 September 2015
 
-BATTLESHIPS!
-This module contains the main function for
-initialisation and task scheduling.
+    @brief      BATTLESHIPS!
+                This module contains the main function for
+                initialisation and task scheduling.
 **/
 
 #include "game.h"
 
-static void display_task_init(void) {
+
+/**
+Display related routines to be run before game loop
+*/
+static void display_task_init(void)
+{
     initialise_display();
     change_phase(SPLASH);
 }
 
 
-static void navswitch_task_init(void) {
+/**
+Navswitch related routines to be run before game loop
+*/
+static void navswitch_task_init(void)
+{
     navswitch_init();
 }
 
 
-static void game_task_init(void) {
+/**
+Game logic tasks to be run before game loop
+*/
+static void game_task_init(void)
+{
     board_init();
-    // reset_acknowledge(65000);
     game_phase = SPLASH;
     tick = 0;
     phase_tick = 0;
-
 }
 
 
-static void button_task_init(void) {
+/**
+Button related routines to be run before game loop
+*/
+static void button_task_init(void)
+{
     button_init();
 }
 
+
 /**
-Initializes the blue LED.
+LED related routines to be run before game loop
 */
-static void led_task_init(void) {
+static void led_task_init(void)
+{
     led_init();
     spwm_period_set(&led_flicker, LED_PERIOD);
     spwm_duty_set(&led_flicker, LED_DUTY);
     spwm_reset(&led_flicker);
 }
 
-/** Initializes the ir_uart module.*/
 
-static void ir_task_init(void) {
+/**
+IR related routines to be run before game loop
+*/
+static void ir_task_init(void)
+{
     ir_uart_init();
 }
+
 
 /**
 Handles navswitch tasks dependant on the game phase.
 */
-static void navswitch_task() {
-
+static void navswitch_task()
+{
     dir_t dir;
     switch(game_phase) {
 
@@ -80,10 +101,12 @@ static void navswitch_task() {
     }
 }
 
+
 /**
 Handles button tasks dependant on the current phase.
 */
-static void button_task() {
+static void button_task()
+{
     button_update();
     if (button_push_event_p(BUTTON1)) {
         switch (game_phase) {
@@ -96,7 +119,6 @@ static void button_task() {
                 break;
 
             case READY:
-
                 ir_send_status(PLAYER_TWO_S);
                 change_phase(AIM);
                 break;
@@ -108,9 +130,11 @@ static void button_task() {
             case PLAY_AGAIN:
                 ir_send_status(PLAY_AGAIN_S);
                 reset_game();
+                break;
         }
     }
 }
+
 
 /**
 Handles blue LED tasks dependant on the game phase.
@@ -141,6 +165,7 @@ static void led_task() {
     }
 
 }
+
 
 /**
 Handles display tasks dependant on the current game phase.
@@ -191,6 +216,7 @@ static void display_task() {
     tinygl_update();
 }
 
+
 /**
 Runs any IR tasks dependant on the current game phase.
 */
@@ -202,8 +228,6 @@ static void ir_task() {
         case READY:
             if (ir_get_status() == PLAYER_TWO_S) { change_phase(WAIT); }
             break;
-
-
 
         case FIRE:
             status = ir_get_status();
@@ -237,7 +261,6 @@ static void ir_task() {
         case TRANSFER:
             status = ir_get_status();
             if (status == LOSER_S) change_phase(ENDRESULT);
-
             else if (status == PLAYON_S)  change_phase(AIM);
             break;
 
@@ -246,6 +269,7 @@ static void ir_task() {
                 reset_game();
 
             }
+            break;
 
     }
 }
@@ -279,9 +303,9 @@ static void game_task() {
 
             }
             break;
-
     }
 }
+
 
 /**
 Swaps states to the provided game phase.
@@ -322,7 +346,6 @@ void change_phase(phase_t new_phase) {
             }
             break;
 
-
         case PLAY_AGAIN:
             tinygl_clear();
             tinygl_text("PUSH TO PLAY AGAIN!");
@@ -332,8 +355,11 @@ void change_phase(phase_t new_phase) {
 }
 
 
-dir_t get_navswitch_dir(void) {
-
+/**
+Get latest navswitch event and return associated direction
+*/
+dir_t get_navswitch_dir(void)
+{
     navswitch_update();
     if (navswitch_push_event_p (NAVSWITCH_WEST)) return DIR_W;
     if (navswitch_push_event_p (NAVSWITCH_EAST)) return DIR_E;
@@ -343,18 +369,22 @@ dir_t get_navswitch_dir(void) {
     return DIR_NONE;
 }
 
+
 /**
 Re-initializes states to re-start game.
 */
-void reset_game(void){
+void reset_game(void)
+{
     tick = 0;
     phase_tick = 0;
     board_init();
     change_phase(PLACING);
-
 }
 
 
+/**
+Re-initializes states to re-start game.
+*/
 int main (void)
 {
 
@@ -380,6 +410,5 @@ int main (void)
         led_task();
         ir_task();
         display_task();
-
     }
 }

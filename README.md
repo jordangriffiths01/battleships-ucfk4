@@ -1,9 +1,9 @@
 # Battleships!
 
-A 2-player battleships game developed to run on the UCFK4 microcontroller.
+A 2-player battleships game developed to run on the UCFK4 micro-controller.
 
-**Developers**: Jordan Griffiths and Jonty Trombik
-**Started**: October 2015
+**Developers**: Jordan Griffiths (jlg108) and Jonty Trombik (jat157)
+**Started**: September 2015
 
 ## Usage
 Navigate into the application directory:
@@ -17,9 +17,9 @@ From within this directory, the following commands can be run
   - `./build_project.sh`: Generates a new make file and dependency documentation (required when source file 'includes' have been modified)
 
 ## Game Play
-**Placing Your Ships**: From the loading screen, press the button to begin placing your ships. Use the navswitch to move your ship around the board, and use the button to rotate ships 90 degrees. Once all ships have been placed, you will automatically be taken to a holding screen.
+**Placing Your Ships**: From the loading screen, press the button to begin placing your ships. Use the navswitch to move your ship around the board, and use the button to rotate ships 90 degrees. Place ships by pressing the navswitch down. Once all ships have been placed, you will automatically be taken to a holding screen.
 
-**Starting**: Once both players have placed their ships, make sure the boards are within IR range, and player 1 should push the button to begin his turn.
+**Starting**: Once both players have placed their ships, make sure the boards are within IR range, and player 1 should push the button to begin their turn.
 
 **Strike Stage**: On your turn, you will see previous successfull strikes (but not misses!) Move the cursor around the screen with the board with the navswitch, and push the navswitch to fire. You will be shown whether your strike was successful, and then taken to a holding screen to wait for the other player.
 
@@ -35,4 +35,4 @@ You can customise the game by altering the following parameters in the file `boa
   - `game.c`, `game.h`: Contains the main game task scheduling, logic and game phase tracking
   - `board.c`, `board.h`: Contain all routines related to board manipulation, ship placement and scoring
   - `display_handler.c`, `display_handler.h`: Contains display handling routines
-  - `ir_handler.c`, `ir_handler.h`: Contains IR communication protocool routines
+  - `ir_handler.c`, `ir_handler.h`: Contains IR communication protocol routines

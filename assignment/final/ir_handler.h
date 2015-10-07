@@ -1,6 +1,7 @@
-/** @file   ir_handler.c
-    @author J. Trombik & J. Griffiths
+/** @file   ir_handler.h
+    @authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
     @date   27 SEPT 2015
+    
     @brief IR handler headers
 */
 

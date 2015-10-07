@@ -1,6 +1,7 @@
 /** @file   ir_handler.c
-    @author J. Trombik & J. Griffiths
+    @authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
     @date   27 SEPT 2015
+    
     @brief IR handling and message manipulation
 */
 
