@@ -29,5 +29,5 @@
 
 #team1 gitignore
 *.cfg
-./game
-./doc/html/
+game
+doc/html/
