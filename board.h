@@ -14,8 +14,8 @@
 
 
 /** Game customisation parameters */
-#define NUM_SHIPS 1
-#define WINNING_SCORE 2
+#define NUM_SHIPS 3
+#define WINNING_SCORE 9
 #define SHIP_LENGTHS {2,3,4}
 
 
