@@ -365,9 +365,9 @@ void change_phase(phase_t new_phase) {
         case ENDRESULT:
             tinygl_clear();
             if (game_phase == RESULT) {
-                tinygl_text("  YOU WIN!");
+                tinygl_text("  YOU WIN!  ");
             } else {
-                tinygl_text("  YOU LOSE!");
+                tinygl_text("  YOU LOSE! ");
             }
             break;
 

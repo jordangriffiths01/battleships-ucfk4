@@ -31,7 +31,7 @@
 #define LOOP_RATE 300
 
 #define RESULT_DURATION 2.2
-#define GAMEOVER_DURATION 6
+#define GAMEOVER_DURATION 9
 #define LED_PERIOD (LOOP_RATE / 4)
 #define LED_DUTY (LOOP_RATE / 6)
 
