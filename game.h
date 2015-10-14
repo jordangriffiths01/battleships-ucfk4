@@ -1,10 +1,12 @@
-/** @file     game.h
-    @authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
-    @date     27 September 2015
+/**
+@file       game.h
+@authors    Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
+@date       27 September 2015
 
-    BATTLESHIPS!
-    This module contains header information for the primary game handler.
+@brief      BATTLESHIPS!
+            Header file for the primary game module.
 **/
+
 
 #ifndef GAME_H
 #define GAME_H
@@ -30,26 +32,36 @@
 #define NAVSWITCH_TASK_RATE 20
 #define LOOP_RATE 300
 
-#define RESULT_DURATION 2.2
-#define GAMEOVER_DURATION 9
-#define LED_PERIOD (LOOP_RATE / 4)
-#define LED_DUTY (LOOP_RATE / 6)
+
+/* Define aesthetic parameters.  */
+#define RESULT_DURATION 2.2             //Duration of HIT/MISS screen (seconds)
+#define GAMEOVER_DURATION 9             //Duration of WIN/LOSE screen (seconds)
+#define LED_PERIOD (LOOP_RATE / 4)      //LED time on per duty cycle (clicks)
+#define LED_DUTY (LOOP_RATE / 6)        //LED length of duty cycle (clicks)
 
 
 /** Define game phases */
 typedef enum phase {
-    SPLASH, //Used for first display message.
-    PLACING, //Ship placement phase.
-    READY, //Waiting for a player to choose player1.
-    AIM,   //Active turn phase - player1 selects strike location.
-    FIRE,  //Strike location selected, sending IR to other player.
+    SPLASH,         //Used for first display message.
+    PLACING,        //Ship placement phase.
+    READY,          //Waiting for a player to choose player1.
+    AIM,            //Active turn phase - player1 selects strike location.
+    FIRE,           //Strike location selected, sending IR to other player.
     RESULT_GRAPHIC, //Display an animated graphic representing hit or miss.
-    RESULT, //Hit or miss message shown to active player
-    TRANSFER, //Next turn intermediate phase
-    WAIT,    //Player 2 phase, inactive state waiting for IR.
-    ENDRESULT,  //Game over message
-    PLAY_AGAIN
+    RESULT,         //Hit or miss message shown to active player
+    TRANSFER,        //Next turn intermediate phase
+    WAIT,           //Player 2 phase, inactive state waiting for IR.
+    ENDRESULT,      //Game over message
+    PLAY_AGAIN,     //Prompts user for restart
 } phase_t;
+
+
+/** Game state variables */
+static phase_t game_phase;              //Current game phase
+static strike_result_t last_result;     //Result of this players last strike
+static int tick;                        //Game loop tick counter
+static int phase_tick;                  //Seperate tick counter for use within a phase
+static spwm_t led_flicker;              //LED modulation interface
 
 
 /**
@@ -119,7 +131,7 @@ static void ir_task(void);
 
 
 /**
-handles switching between time oriented game phases.
+Handles switching between time oriented game phases.
 */
 static void game_task(void);
 
@@ -141,5 +153,6 @@ void reset_game(void);
 Get latest navswitch event and return associated direction
 */
 dir_t get_navswitch_dir(void);
+
 
 #endif
