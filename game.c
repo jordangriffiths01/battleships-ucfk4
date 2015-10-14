@@ -98,7 +98,7 @@ static void navswitch_task(void)
             }
             break;
 
-        case AIM:
+        case AIM :
             /** Handle navswitch events for player moving/firing target cursor */
             dir = get_navswitch_dir();
             if (dir >= DIR_N && dir <= DIR_W) {
@@ -109,7 +109,7 @@ static void navswitch_task(void)
             }
             break;
 
-        default:
+        default :
             break;
     }
 }
@@ -145,7 +145,7 @@ static void button_task(void)
                 reset_game();
                 break;
 
-            default:
+            default :
                 break;
         }
     }
@@ -272,7 +272,7 @@ static void ir_task(void)
             }
             break;
 
-        case FIRE:
+        case FIRE :
             /** Await result of strike*/
             status = ir_get_status();
 
@@ -317,14 +317,14 @@ static void ir_task(void)
             }
             break;
 
-        case PLAY_AGAIN:
+        case PLAY_AGAIN :
             /** Await new game signal from other player */
             if(ir_get_status() == PLAY_AGAIN_S){
                 reset_game();
             }
             break;
 
-        default:
+        default :
             break;
     }
 }
@@ -406,12 +406,12 @@ void change_phase(phase_t new_phase)
             }
             break;
 
-        case PLAY_AGAIN:
+        case PLAY_AGAIN :
             tinygl_clear();
             tinygl_text("  PUSH TO PLAY AGAIN!");
             break;
 
-        default:
+        default :
             break;
     }
 
