@@ -42,26 +42,18 @@
 
 /** Define game phases */
 typedef enum phase {
-    SPLASH,         //Used for first display message.
-    PLACING,        //Ship placement phase.
-    READY,          //Waiting for a player to choose player1.
-    AIM,            //Active turn phase - player1 selects strike location.
-    FIRE,           //Strike location selected, sending IR to other player.
-    RESULT_GRAPHIC, //Display an animated graphic representing hit or miss.
-    RESULT,         //Hit or miss message shown to active player
-    TRANSFER,        //Next turn intermediate phase
-    WAIT,           //Player 2 phase, inactive state waiting for IR.
-    ENDRESULT,      //Game over message
-    PLAY_AGAIN,     //Prompts user for restart
+    SPLASH,                             //Used for first display message.
+    PLACING,                            //Ship placement phase.
+    READY,                              //Waiting for a player to choose player1.
+    AIM,                                //Active turn phase - player1 selects strike location.
+    FIRE,                               //Strike location selected, sending IR to other player.
+    RESULT_GRAPHIC,                     //Display an animated graphic representing hit or miss.
+    RESULT,                             //Hit or miss message shown to active player
+    TRANSFER,                           //Next turn intermediate phase
+    WAIT,                               //Player 2 phase, inactive state waiting for IR.
+    ENDRESULT,                          //Game over message
+    PLAY_AGAIN,                         //Prompts user for restart
 } phase_t;
-
-
-/** Game state variables */
-static phase_t game_phase;              //Current game phase
-static strike_result_t last_result;     //Result of this players last strike
-static int tick;                        //Game loop tick counter
-static int phase_tick;                  //Seperate tick counter for use within a phase
-static spwm_t led_flicker;              //LED modulation interface
 
 
 /**

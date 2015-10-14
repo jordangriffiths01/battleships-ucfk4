@@ -12,6 +12,10 @@
 /** Required library modules */
 #include "tinygl.h"
 
+/** Boolean Macros */
+#define TRUE 1
+#define FALSE 0
+
 
 /** Game customisation parameters */
 #define NUM_SHIPS 3
@@ -19,11 +23,19 @@
 #define SHIP_LENGTHS {2,3,4}
 
 
-/** board specific enumeration definitions */
+/** Board dimension macros */
+#define CENTRE_X 2
+#define CENTRE_Y 3
+
+
+/** Board specific enumeration definitions */
 typedef enum rotation {HORIZ, VERT} rotation_t;
-typedef enum dir {DIR_N, DIR_E, DIR_S, DIR_W, DIR_DOWN, DIR_NONE} dir_t;
 typedef enum board_type {THIS_BOARD, TARGET_BOARD} board_type_t;
 typedef enum strike_result {HIT, MISS} strike_result_t;
+typedef enum dir {
+    DIR_N, DIR_E, DIR_S,
+    DIR_W, DIR_DOWN, DIR_NONE
+} dir_t;
 
 
 /** Structure definition for ship to be placed */
@@ -82,7 +94,7 @@ bool is_winner(void);
 
 
 /**
-Move the ship currently being placed.
+Move the ship currently being placed. Updates position in ship struct.
 @param dir direction to move ship.
 */
 void move_ship(dir_t dir);

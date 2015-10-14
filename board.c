@@ -25,7 +25,7 @@ static uint8_t boards[2][DISPLAY_WIDTH];
 
 
 /** Define ship lengths array at runtime */
-uint8_t ship_lengths[NUM_SHIPS] = SHIP_LENGTHS;
+static uint8_t ship_lengths[NUM_SHIPS] = SHIP_LENGTHS;
 
 
 /**
@@ -41,8 +41,8 @@ void board_init(void)
     cur_ship_num = 0;
     game_score = 0;
     reset_cur_ship(ship_lengths[cur_ship_num]);
-    cursor = tinygl_point(2,3);
-    strike_position = tinygl_point(0,0);
+    cursor = tinygl_point(CENTRE_X, CENTRE_Y);
+    strike_position = tinygl_point(0, 0);
 }
 
 
@@ -53,6 +53,7 @@ load current ship into game board, if position is valid.
 bool place_ship(void)
 {
     if (is_valid_position()) {
+        //Update board bitmap to include new ship points
         uint8_t i;
         for (i = 0; i < cur_ship.length; i++) {
             if (cur_ship.rot == HORIZ) {
@@ -61,9 +62,9 @@ bool place_ship(void)
                 boards[THIS_BOARD][cur_ship.pos.x] |= BIT(cur_ship.pos.y + i);
             }
         }
-        return 1;
+        return TRUE;
     } else {
-        return 0;
+        return FALSE;
     }
 }
 
@@ -76,13 +77,14 @@ bool is_valid_position(void)
 {
     uint8_t i;
     for (i = 0; i < cur_ship.length; i++) {
-        if (cur_ship.rot == HORIZ && boards[THIS_BOARD][cur_ship.pos.x + i] & BIT(cur_ship.pos.y)) {
-            return 0;
-        } else if (cur_ship.rot == VERT && boards[THIS_BOARD][cur_ship.pos.x] & BIT(cur_ship.pos.y + i)) {
-            return 0;
+        uint8_t x_offset = cur_ship.rot == HORIZ? i : 0;
+        uint8_t y_offset = cur_ship.rot == VERT? i : 0;
+        if (boards[THIS_BOARD][cur_ship.pos.x + x_offset] & BIT(cur_ship.pos.y + y_offset)) {
+            //Intersection with existing ship found
+            return FALSE;
         }
     }
-    return 1;
+    return TRUE;
 }
 
 
@@ -128,13 +130,13 @@ bool is_winner(void)
 
 
 /**
-Move the ship currently being placed.
+Move the ship currently being placed. Updates position in ship struct.
 @param dir direction to move ship.
 */
 void move_ship(dir_t dir)
 {
-    uint8_t x_offset = cur_ship.rot == HORIZ? cur_ship.length - 1:0;
-    uint8_t y_offset = cur_ship.rot == VERT? cur_ship.length - 1:0;
+    uint8_t x_offset = cur_ship.rot == HORIZ? cur_ship.length - 1 : 0;
+    uint8_t y_offset = cur_ship.rot == VERT? cur_ship.length - 1 : 0;
 
     if (dir == DIR_W) {
         cur_ship.pos.x -= cur_ship.pos.x  == 0? 0 : 1;
@@ -154,7 +156,6 @@ Move the strike cursor.
 */
 void move_cursor(dir_t dir)
 {
-
     if (dir == DIR_W) {
         cursor.x -= cursor.x  == 0? 0 : 1;
     } else if (dir == DIR_E) {
@@ -229,9 +230,11 @@ bool next_ship(void)
 {
     cur_ship_num++;
     if (cur_ship_num == NUM_SHIPS) {
-        return 0;
+        //No ships remaining
+        return FALSE;
     } else {
+        //Go to next ship
         reset_cur_ship(ship_lengths[cur_ship_num]);
-        return 1;
+        return TRUE;
     }
 }

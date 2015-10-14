@@ -11,6 +11,14 @@
 #include "game.h"
 
 
+/** Game state variables */
+static phase_t game_phase;              //Current game phase
+static strike_result_t last_result;     //Result of this players last strike
+static int tick;                        //Game loop tick counter
+static int phase_tick;                  //Seperate tick counter for use within a phase
+static spwm_t led_flicker;              //LED modulation interface
+
+
 /**
 Display related routines to be run before game loop
 */
