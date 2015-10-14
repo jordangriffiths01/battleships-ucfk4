@@ -48,7 +48,7 @@ void board_init(void)
 
 /**
 load current ship into game board, if position is valid.
-@return true (1) if ship placement was successful, false (0) otherwise.
+@return TRUE (1) if ship placement was successful, FALSE (0) otherwise.
 */
 bool place_ship(void)
 {
@@ -71,7 +71,7 @@ bool place_ship(void)
 
 /**
 Verify that current ship position is non-overlapping with other placed ships
-@return true (1) if position is valid, false (0) otherwise.
+@return TRUE (1) if position is valid, FALSE (0) otherwise.
 */
 bool is_valid_position(void)
 {
@@ -90,7 +90,7 @@ bool is_valid_position(void)
 
 /**
 Verify that strike location was not a previous successful hit.
-@return true (1) if position is valid, false (0) otherwise.
+@return TRUE (1) if position is valid, FALSE (0) otherwise.
 */
 bool is_valid_strike(void)
 {
@@ -111,7 +111,7 @@ void add_hit(void)
 
 /**
 Check whether enemy strike hits a ship.
-@return true (1) for hit, false (0) for miss.
+@return TRUE (1) for hit, FALSE (0) for miss.
 */
 bool is_hit(tinygl_point_t pos)
 {
@@ -121,7 +121,7 @@ bool is_hit(tinygl_point_t pos)
 
 /**
 Check whether current game score is such that all ships have been sunk.
-@return true (1) if all enemy ships sunk, false (0) otherwise.
+@return TRUE (1) if all enemy ships sunk, FALSE (0) otherwise.
 */
 bool is_winner(void)
 {
@@ -224,7 +224,7 @@ void reset_cur_ship(uint8_t newlen)
 
 /**
 Attempts to generate next ship to be placed.
-@returns false (0) if no more ships, true (1) otherwise
+@returns FALSE (0) if no more ships, TRUE (1) otherwise
 */
 bool next_ship(void)
 {

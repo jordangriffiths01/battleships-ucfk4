@@ -9,27 +9,35 @@
 #include "display_handler.h"
 
 
-/** array defining points for tick animation (in order) */
-tinygl_point_t tick_points[NUM_TICK_POINTS] = {
+
+/** Array defining points for tick animation (in order) */
+static tinygl_point_t tick_points[NUM_TICK_POINTS] =
+{
     {2,6}, {3,5}, {4,4}, {3,3}, {2,2}, {1,1}, {0,0}, {0,0}, {0,0},
 };
 
 
-/** bitmap for ship icon */
-uint8_t ship_bitmap[DISPLAY_WIDTH] = {0x8, 0xA, 0x2A, 0x7F, 0x3E};
-
-
-/** array of bitmaps for target animation (one bitmap = one step) */
-uint8_t target_bitmap[NUM_TARGET_STEPS][DISPLAY_WIDTH] =
+/** Bitmap for cross icon */
+static uint8_t cross_bitmap[DISPLAY_WIDTH] =
 {
-    //{0x6B, 0x41, 0x2A, 0x41, 0x6B},
+    0x22, 0x14, 0x8, 0x14, 0x22
+};
+
+
+/** Bitmap for ship icon */
+static uint8_t ship_bitmap[DISPLAY_WIDTH] =
+{
+    0x8, 0xA, 0x2A, 0x7F, 0x3E
+};
+
+
+/** Array of bitmaps for target animation (one bitmap = one step) */
+static uint8_t target_bitmap[NUM_TARGET_STEPS][DISPLAY_WIDTH] =
+{
     {0x63, 0x49, 0x1C, 0x49, 0x63},
     {0x63, 0x41, 0x0, 0x41, 0x63},
 };
 
-
-/** bitmap for cross icon */
-uint8_t cross_bitmap[DISPLAY_WIDTH] = {0x22, 0x14, 0x8, 0x14, 0x22};
 
 
 /**
@@ -55,21 +63,21 @@ void draw_ship(void)
     uint8_t i;
     for (i = 0; i < ship->length; i++) {
         if (ship->rot == HORIZ) {
-            tinygl_draw_point(tinygl_point(ship->pos.x + i, ship->pos.y), 1);
+            tinygl_draw_point(tinygl_point(ship->pos.x + i, ship->pos.y), ON);
         } else if (ship->rot == VERT) {
-            tinygl_draw_point(tinygl_point(ship->pos.x, ship->pos.y + i), 1);
+            tinygl_draw_point(tinygl_point(ship->pos.x, ship->pos.y + i), ON);
         }
     }
 }
 
 
 /**
-Draw cursor
+Draw cursor on display
  */
 void draw_cursor(void)
 {
     tinygl_point_t cursor = get_cursor();
-    tinygl_draw_point(cursor, 1);
+    tinygl_draw_point(cursor, ON);
 }
 
 
@@ -83,8 +91,8 @@ void draw_board(board_type_t board_type)
     int i, j;
     for (i = 0; i < DISPLAY_WIDTH; i++) {
         for (j = 0; j < DISPLAY_HEIGHT; j++) {
-            uint8_t on =  board[i] & BIT(j);
-            tinygl_draw_point(tinygl_point(i, j), on);
+            uint8_t is_on =  board[i] & BIT(j);
+            tinygl_draw_point(tinygl_point(i, j), is_on);
         }
     }
 }
@@ -108,35 +116,39 @@ void display_result(strike_result_t last_result)
 /**
 Draw next frame for tick animation (if frames remaining).
 Animation is a tick drawn one dot at a time
-@return 0 for failure (no frames remaining) or 1 otherwise
+@return FALSE for failure (no frames remaining) or TRUE otherwise
  */
 int draw_tick_step(void)
 {
     static int step = 0;
     if (step > NUM_TICK_POINTS) {
+        //animation finished
         step = 0;
-        return 0;
+        return FALSE;
     }
 
+    //draw next step
     tinygl_draw_point(tick_points[step], ON);
     step++;
-    return 1;
+    return TRUE;
 }
 
 
 /**
 Draw next frame for cross animation (if frames remaining)
 Animation is a cross that flashes.
-@return 0 for failure (no frames remaining) or 1 otherwise
+@return FALSE for failure (no frames remaining) or TRUE otherwise
  */
 int draw_cross_step(void)
 {
     static int step = 0;
     if (step >= NUM_CROSS_FLASHES * 2) {
+        //animation finished
         step = 0;
-        return 0;
+        return FALSE;
 
     } else if (step % 2 == 0) {
+        //draw cross
         int i, j;
         for (i = 0; i < DISPLAY_WIDTH; i++) {
             for (j = 0; j < DISPLAY_HEIGHT; j++) {
@@ -144,11 +156,12 @@ int draw_cross_step(void)
             }
         }
     } else {
+        //clear cross
         tinygl_clear();
     }
-    step++;
-    return 1;
 
+    step++;
+    return TRUE;
 }
 
 
@@ -160,12 +173,14 @@ void draw_target_step(void)
 {
     static int step = 0;
     tinygl_clear();
+
     int i, j;
     for (i = 0; i < DISPLAY_WIDTH; i++) {
         for (j = 0; j < DISPLAY_HEIGHT; j++) {
             tinygl_draw_point(tinygl_point(i, j), target_bitmap[step][i] >> j & 1);
         }
     }
+
     step = (step + 1) % NUM_TARGET_STEPS;
 }
 
@@ -180,21 +195,25 @@ by user prompt 'Push To Start!'
      static int step = 0;
      static bool text_on = 0;
      int i, j;
+
      if (step == 2 * DISPLAY_HEIGHT + 1) {
+         // Transfer to scrolling text
          tinygl_text("  PUSH TO START!");
-         text_on = 1;
-     }
-     else if (step == 0) {
+         text_on = TRUE;
+     } else if (step == 0) {
+         // Transfer to ship logo
          tinygl_clear();
          text_on = 0;
      }
 
      if (!text_on) {
+         // Draw ship step
          for (i = 0; i < DISPLAY_WIDTH; i++) {
              for (j = 0; j < DISPLAY_HEIGHT; j++) {
                  tinygl_draw_point(tinygl_point(i, j), (ship_bitmap[i] << step) >> (j + DISPLAY_HEIGHT) & 1);
              }
          }
      }
+
      step = (step + 1) % NUM_SHIP_STEPS;
  }

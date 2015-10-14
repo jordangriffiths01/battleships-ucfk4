@@ -15,6 +15,7 @@
 #include "../fonts/font3x5_1.h"
 
 
+/** LED display macros */
 #define ON 1
 #define OFF 0
 
@@ -71,7 +72,7 @@ void display_result(strike_result_t last_result);
 /**
 Draw next frame for tick animation (if frames remaining).
 Animation is a tick drawn one dot at a time
-@return 0 for failure (no frames remaining) or 1 otherwise
+@return FALSE for failure (no frames remaining) or TRUE otherwise
  */
 int draw_tick_step(void);
 
@@ -79,7 +80,7 @@ int draw_tick_step(void);
 /**
 Draw next frame for cross animation (if frames remaining)
 Animation is a cross that flashes.
-@return 0 for failure (no frames remaining) or 1 otherwise
+@return FALSE for failure (no frames remaining) or TRUE otherwise
  */
 int draw_cross_step(void);
 
