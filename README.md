@@ -1,4 +1,5 @@
-# Battleships!
+# ![Battleships Logo](doc/logo-icon.png) BATTLESHIPS
+
 
 A 2-player battleships game developed to run on the UCFK4 micro-controller.
 
@@ -10,9 +11,9 @@ A 2-player battleships game developed to run on the UCFK4 micro-controller.
 ## Getting set up
 
 1. Get the AVR Compilation Tools:
-    ```
-    $ sudo apt-get install git gcc-avr binutils-avr avr-libc dfu-programmer
-    ```
+```
+$ sudo apt-get install git gcc-avr binutils-avr avr-libc dfu-programmer
+```
 
 
 2. Clone the UCFK4 git repository: This contains all the necessary drivers and utilities to run the battleships application
