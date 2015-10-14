@@ -1,8 +1,9 @@
-/** @file     display_handler.c
-    @authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
-    @date     27 September 2015
+/**
+@file     display_handler.c
+@authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
+@date     27 September 2015
 
-    @brief    Display handling routines for battleships game
+@brief    Display handling routines for battleships game
 **/
 
 

@@ -1,8 +1,9 @@
-/** @file   ir_handler.h
-    @authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
-    @date   27 SEPT 2015
+/**
+@file       ir_handler.h
+@authors    Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
+@date       27 SEPT 2015
 
-    @brief IR handler headers
+@brief      IR handler headers
 */
 
 #ifndef IR_HANDLER_H
@@ -18,12 +19,16 @@
 #define NO_POSITION  0xff
 
 
+/** Define character encoding macros, using encoding 0b00xxxyyy */
+#define ENCODE_POS(x, y) (x << 3 | y)
+#define DECODE_X(encoded_pos) (encoded_pos >> 3)
+#define DECODE_Y(encoded_pos) (encoded_pos & 0x7)
+
+
 /** Status codes used for IR - must be in range 0x40 -> 0x7f **/
 typedef enum
 {
     NORESPONSE_S = 0x40,    //Used when no status code received
-    //READY_S,
-    //ACKNOWLEDGED_S,
     PLAYER_TWO_S,           //Sent to tell other player they are player 2 (and to begin in wait phase)
     HIT_S,                  //Sent to communicate the requested strike was a hit
     MISS_S,                 //Sent to communicate the requested strike was a miss
@@ -50,7 +55,7 @@ states ir_get_status(void);
 
 
 /**
-Encodes position as 0b00xy and transmits as character.
+Encodes position as 0b00xxxyyy and transmits as character.
 @param pos tinygl_point representing position of strike
 */
 void ir_send_strike(tinygl_point_t pos);
@@ -65,7 +70,7 @@ tinygl_point_t ir_decode_strike(char c);
 
 
 /**
-Decode a received position character 0b00xy into its x and y components
+Decode a received position character 0b00xxxyyy into its x and y components
 @return a tinygl_point representing this position
 */
 uint8_t ir_get_position(void);

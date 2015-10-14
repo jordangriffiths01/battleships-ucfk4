@@ -1,8 +1,9 @@
-/** @file     display_handler.h
-    @authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
-    @date     27 September 2015
+/**
+@file     display_handler.h
+@authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
+@date     27 September 2015
 
-    @brief    display routine definitions
+@brief    Display Routine Definitions
 **/
 
 #ifndef DISPLAY_HANDLER_H
@@ -20,10 +21,12 @@
 #define OFF 0
 
 
-/** graphical parameter definitions */
+/** Display parameters */
 #define SCROLL_SPEED 27
 #define DISPLAY_TASK_RATE 300
 
+
+/** Animation parameters */
 #define TICK_STEP_RATE 10
 #define NUM_TICK_POINTS 9
 

@@ -1,8 +1,9 @@
-/** @file     board.h
-    @authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
-    @date     27 September 2015
+/**
+@file     board.h
+@authors  Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
+@date     27 September 2015
 
-    @brief    Game board routine definitions for Battleships
+@brief    Game board routine definitions for Battleships
 **/
 
 #ifndef BOARD_H

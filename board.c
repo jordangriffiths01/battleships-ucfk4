@@ -1,9 +1,10 @@
-/** @file       board.c
-    @authors    Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
-    @date       27 September 2015
+/**
+@file       board.c
+@authors    Jordan Griffiths (jlg108) & Jonty Trombik (jat157)
+@date       27 September 2015
 
-    @brief      Game board initialisation and manipulation routines
-                for Battleships
+@brief      Game board initialisation and manipulation routines
+            for Battleships
 **/
 
 #include "board.h"
