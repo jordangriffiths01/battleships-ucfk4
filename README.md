@@ -25,7 +25,7 @@ $ git clone https://eng-git.canterbury.ac.nz/mph/ucfk4.git
 3. Clone the Battleships application: This repository needs to be cloned into the apps directory in the ucfk4 folder structure
 ```
 $ cd ucfk4/apps
-$ git clone https://eng-git.canterbury.ac.nz/ence260-2015/team1.git
+$ git clone https://github.com/jordangriffiths01/battleships-ucfk4.git
 $ cd team1
 ```
 
